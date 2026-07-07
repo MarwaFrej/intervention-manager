@@ -1,0 +1,2 @@
+-- Database initialization
+-- Flyway will manage schema migrations later
