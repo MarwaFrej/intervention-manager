@@ -17,3 +17,17 @@ node_modules/
 
 # OS
 .DS_Store
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring local config
+application-local.yml
+application-local.properties
+
+# Database
+*.db
+*.sqlite
+
+# Linux
+*~
