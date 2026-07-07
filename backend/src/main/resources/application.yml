@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: intervention-manager
+
+  profiles:
+    active: dev
