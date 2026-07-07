@@ -1,0 +1,19 @@
+# Java
+*.class
+*.log
+target/
+
+# IntelliJ
+.idea/
+
+# VS Code
+.vscode/
+
+# Node
+node_modules/
+
+# Env
+.env
+
+# OS
+.DS_Store
