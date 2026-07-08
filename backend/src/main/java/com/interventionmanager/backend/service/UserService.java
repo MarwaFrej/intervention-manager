@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.interventionmanager.backend.dto.request.CreateUserRequest;
+import com.interventionmanager.backend.exception.UserAlreadyExistsException;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class UserService {
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new UserAlreadyExistsException(request.email());
         }
         user.setEmail(request.email());
         user.setPassword(request.password());
