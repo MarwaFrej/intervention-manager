@@ -3,6 +3,7 @@ package com.interventionmanager.backend.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.interventionmanager.backend.entity.enums.Role;
 
 public record CreateUserRequest(
 
@@ -20,6 +21,6 @@ public record CreateUserRequest(
     String password,
 
     @NotBlank(message = "Le rôle est obligatoire")
-    String role
+    Role role
 
 ) {}

@@ -1,58 +1,37 @@
-package com.interventionmanager.backend.service;
-
-import com.interventionmanager.backend.dto.response.UserResponse;
-import com.interventionmanager.backend.entity.User;
-import com.interventionmanager.backend.repository.UserRepository;
-import org.springframework.stereotype.Service;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.interventionmanager.backend.dto.request.CreateUserRequest;
-import com.interventionmanager.backend.exception.UserAlreadyExistsException;
-
-import java.util.List;
-
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     public List<UserResponse> getAllUsers() {
-
         return userRepository.findAll()
                 .stream()
-                .map(this::toResponse)
+                .map(userMapper::toResponse)
                 .toList();
     }
 
-    private UserResponse toResponse(User user) {
-
-        return UserResponse.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
-    }
-
     public UserResponse createUser(CreateUserRequest request) {
-        User user = new User();
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
+
         if (userRepository.existsByEmail(request.email())) {
             throw new UserAlreadyExistsException(request.email());
         }
-        user.setEmail(request.email());
-        user.setPassword(request.password());
-        user.setRole(request.role());
+
+        User user = User.builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .email(request.email())
+                .password(request.password())
+                .role(request.role())
+                .build();
 
         User savedUser = userRepository.save(user);
 
-        return toResponse(savedUser);
+        return userMapper.toResponse(savedUser);
     }
 }
