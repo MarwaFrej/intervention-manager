@@ -11,7 +11,7 @@ public record CreateClientRequest(
         max = 100,
         message = "Le prénom ne doit pas dépasser 100 caractères"
     )
-    String firstName
+    String firstName,
 
     @NotBlank(message = "Le nom est obligatoire")
     @Size(

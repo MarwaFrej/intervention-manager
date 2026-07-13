@@ -1,3 +1,10 @@
+package com.interventionmanager.backend.mapper;
+
+import com.interventionmanager.backend.dto.response.ClientResponse;
+import com.interventionmanager.backend.dto.request.CreateClientRequest;
+import com.interventionmanager.backend.entity.Client;
+import org.springframework.stereotype.Component;
+
 @Component
 public class ClientMapper {
 

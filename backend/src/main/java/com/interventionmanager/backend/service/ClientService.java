@@ -1,3 +1,17 @@
+package com.interventionmanager.backend.service;
+
+import com.interventionmanager.backend.dto.request.CreateClientRequest;
+import com.interventionmanager.backend.dto.response.ClientResponse;
+import com.interventionmanager.backend.entity.Client;
+import com.interventionmanager.backend.mapper.ClientMapper;
+import com.interventionmanager.backend.repository.ClientRepository;
+import org.springframework.stereotype.Service;
+import com.interventionmanager.backend.dto.request.UpdateClientRequest;
+import com.interventionmanager.backend.exception.ClientAlreadyExistsException;
+import com.interventionmanager.backend.exception.ClientNotFoundException;
+
+import java.util.List;
+
 @Service
 public class ClientService {
 
