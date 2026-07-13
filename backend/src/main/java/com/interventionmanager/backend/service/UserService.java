@@ -1,3 +1,14 @@
+package com.interventionmanager.backend.service;
+
+import com.interventionmanager.backend.dto.request.CreateUserRequest;
+import com.interventionmanager.backend.dto.response.UserResponse;
+import com.interventionmanager.backend.entity.User;
+import com.interventionmanager.backend.mapper.UserMapper;
+import com.interventionmanager.backend.repository.UserRepository;
+import com.interventionmanager.backend.exception.UserAlreadyExistsException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 @Service
 public class UserService {
 
