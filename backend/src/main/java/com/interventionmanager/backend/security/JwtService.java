@@ -1,12 +1,12 @@
 package com.interventionmanager.backend.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import javax.crypto.SecretKey;
+import java.util.Date;
 
 
 @Service
@@ -16,10 +16,9 @@ public class JwtService {
 
 
     public JwtService() {
-
         this.secretKey = Keys.hmacShaKeyFor(
                 "my-super-secret-key-that-is-long-enough-for-hs256"
-                .getBytes()
+                        .getBytes()
         );
     }
 
@@ -34,5 +33,37 @@ public class JwtService {
                 )
                 .signWith(secretKey)
                 .compact();
+    }
+
+
+    public String extractEmail(String token) {
+
+        return extractClaims(token)
+                .getSubject();
+    }
+
+
+    public boolean isTokenValid(String token) {
+
+        try {
+
+            extractClaims(token);
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
+
+    private Claims extractClaims(String token) {
+
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
