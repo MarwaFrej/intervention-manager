@@ -7,6 +7,7 @@ import com.interventionmanager.backend.mapper.UserMapper;
 import com.interventionmanager.backend.repository.UserRepository;
 import com.interventionmanager.backend.exception.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 @Service
@@ -14,10 +15,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserResponse> getAllUsers() {
@@ -37,7 +40,7 @@ public class UserService {
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .role(request.role())
                 .build();
 
