@@ -27,11 +27,13 @@ public class ClientController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
     public List<ClientResponse> getAllClients() {
         return clientService.getAllClients();
     }
 
    @PostMapping
+   @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<ClientResponse> createClient(
             @Valid @RequestBody CreateClientRequest request
     ){
@@ -43,12 +45,14 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
     public ResponseEntity<ClientResponse> getClientById(@PathVariable Long id) {
         ClientResponse clientResponse = clientService.getClientById(id);
         return ResponseEntity.ok(clientResponse);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
         return ResponseEntity.noContent().build();

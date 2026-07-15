@@ -25,6 +25,7 @@ public class InterventionController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
     public List<InterventionResponse> getAllInterventions() {
 
         return interventionService.getAllInterventions();
@@ -32,6 +33,7 @@ public class InterventionController {
 
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<InterventionResponse> createIntervention(
             @Valid @RequestBody CreateInterventionRequest request
     ) {
@@ -47,6 +49,7 @@ public class InterventionController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<InterventionResponse> getInterventionById(
             @PathVariable Long id
     ) {

@@ -48,4 +48,8 @@ public class UserService {
 
         return userMapper.toResponse(savedUser);
     }
+
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }
