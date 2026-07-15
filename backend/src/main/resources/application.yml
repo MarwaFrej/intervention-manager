@@ -4,3 +4,7 @@ spring:
 
   profiles:
     active: dev
+  
+  jwt:
+    secret: "my-super-secret-key-that-is-long-enough-for-hs256"
+    expiration: 86400000
