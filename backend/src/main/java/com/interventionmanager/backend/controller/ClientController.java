@@ -14,9 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
+@Tag(name = "Clients", description = "Gestion des clients")
 @RestController
 @RequestMapping("/api/clients")
 public class ClientController {
@@ -26,15 +29,17 @@ public class ClientController {
     public ClientController(ClientService clientService) {
         this.clientService = clientService;
     }
-
+    
+    @Operation(summary = "Obtenir tous les clients")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
     public List<ClientResponse> getAllClients() {
         return clientService.getAllClients();
     }
 
-   @PostMapping
-   @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    @Operation(summary = "Créer un client")
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<ClientResponse> createClient(
             @Valid @RequestBody CreateClientRequest request
     ){
@@ -45,6 +50,7 @@ public class ClientController {
                 .body(response);
     }
 
+    @Operation(summary = "Obtenir un client par son ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
     public ResponseEntity<ClientResponse> getClientById(@PathVariable Long id) {
@@ -52,6 +58,7 @@ public class ClientController {
         return ResponseEntity.ok(clientResponse);
     }
 
+    @Operation(summary = "Supprimer un client par son ID")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {

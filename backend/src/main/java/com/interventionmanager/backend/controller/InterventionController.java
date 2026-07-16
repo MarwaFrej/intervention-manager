@@ -8,10 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
-
+@Tag(name = "Interventions", description = "Gestion des interventions")
 @RestController
 @RequestMapping("/api/interventions")
 public class InterventionController {
@@ -24,7 +26,7 @@ public class InterventionController {
         this.interventionService = interventionService;
     }
 
-
+    @Operation(summary = "Obtenir toutes les interventions")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
     public List<InterventionResponse> getAllInterventions() {
@@ -32,7 +34,7 @@ public class InterventionController {
         return interventionService.getAllInterventions();
     }
 
-
+    @Operation(summary = "Créer une intervention")
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<InterventionResponse> createIntervention(
@@ -48,7 +50,7 @@ public class InterventionController {
                 .body(response);
     }
 
-
+    @Operation(summary = "Obtenir une intervention par son ID")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<InterventionResponse> getInterventionById(
@@ -62,7 +64,7 @@ public class InterventionController {
         return ResponseEntity.ok(response);
     }
 
-
+    @Operation(summary = "Supprimer une intervention par son ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIntervention(
             @PathVariable Long id
