@@ -12,6 +12,7 @@ import com.interventionmanager.backend.entity.enums.InterventionStatus;
 import com.interventionmanager.backend.exception.ClientNotFoundException;
 import com.interventionmanager.backend.exception.InterventionNotFoundException;
 import com.interventionmanager.backend.service.InterventionService;
+import com.interventionmanager.backend.dto.request.UpdateInterventionRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -266,5 +267,74 @@ class InterventionServiceTest {
 
 				verify(interventionRepository, never())
 								.delete(any(Intervention.class));
+		}
+
+		@Test
+		void shouldUpdateInterventionSuccessfully() {
+
+				// GIVEN
+
+				Client client = Client.builder()
+								.id(1L)
+								.build();
+
+				Intervention intervention = Intervention.builder()
+								.id(1L)
+								.title("Ancien titre")
+								.description("Ancienne description")
+								.status(InterventionStatus.NEW)
+								.priority(InterventionPriority.LOW)
+								.scheduledAt(LocalDateTime.now().plusDays(1))
+								.client(client)
+								.build();
+
+				UpdateInterventionRequest request =
+								new UpdateInterventionRequest(
+												"Nouveau titre",
+												"Nouvelle description",
+												InterventionStatus.IN_PROGRESS,
+												InterventionPriority.HIGH,
+												LocalDateTime.now().plusDays(3),
+												1L
+								);
+
+				InterventionResponse response =
+								InterventionResponse.builder()
+												.id(1L)
+												.title("Nouveau titre")
+												.description("Nouvelle description")
+												.status(InterventionStatus.IN_PROGRESS)
+												.priority(InterventionPriority.HIGH)
+												.scheduledAt(request.scheduledAt())
+												.clientId(1L)
+												.build();
+
+				when(interventionRepository.findById(1L))
+								.thenReturn(Optional.of(intervention));
+
+				when(clientRepository.findById(1L))
+        				.thenReturn(Optional.of(client));
+
+				when(interventionRepository.save(intervention))
+								.thenReturn(intervention);
+
+				when(interventionMapper.toResponse(intervention))
+								.thenReturn(response);
+
+				// WHEN
+
+				InterventionResponse result =
+								interventionService.updateIntervention(1L, request);
+
+				// THEN
+
+				assertEquals("Nouveau titre", intervention.getTitle());
+				assertEquals("Nouvelle description", intervention.getDescription());
+				assertEquals(InterventionStatus.IN_PROGRESS, intervention.getStatus());
+				assertEquals(InterventionPriority.HIGH, intervention.getPriority());
+
+				verify(interventionRepository).save(intervention);
+
+				assertEquals("Nouveau titre", result.title());
 		}
 }
