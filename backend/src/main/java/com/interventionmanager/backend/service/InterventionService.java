@@ -11,6 +11,7 @@ import com.interventionmanager.backend.mapper.InterventionMapper;
 import com.interventionmanager.backend.repository.ClientRepository;
 import com.interventionmanager.backend.repository.InterventionRepository;
 import org.springframework.stereotype.Service;
+import com.interventionmanager.backend.exception.InterventionNotFoundException;
 
 import java.util.List;
 
@@ -68,8 +69,7 @@ public class InterventionService {
     public InterventionResponse getInterventionById(Long id) {
 
         Intervention intervention = interventionRepository.findById(id)
-                .orElseThrow(() -> new ClientNotFoundException(id));
-
+                .orElseThrow(() -> new InterventionNotFoundException(id));
 
         return interventionMapper.toResponse(intervention);
     }
@@ -78,7 +78,7 @@ public class InterventionService {
     public void deleteIntervention(Long id) {
 
         Intervention intervention = interventionRepository.findById(id)
-                .orElseThrow(() -> new ClientNotFoundException(id));
+                .orElseThrow(() -> new InterventionNotFoundException(id));
 
 
         interventionRepository.delete(intervention);
