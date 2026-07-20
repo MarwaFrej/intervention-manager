@@ -15,6 +15,11 @@ import com.interventionmanager.backend.exception.InterventionNotFoundException;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
+import com.interventionmanager.backend.specification.InterventionSpecification;
+
 @Service
 public class InterventionService {
 
@@ -133,5 +138,18 @@ public class InterventionService {
 
 
         return interventionMapper.toResponse(updatedIntervention);
+    }
+
+    public Page<InterventionResponse> getAllInterventions(
+        InterventionFilterRequest filter,
+        Pageable pageable
+    ) {
+
+        return interventionRepository
+            .findAll(
+                InterventionSpecification.filter(filter),
+                pageable
+            )
+            .map(interventionMapper::toResponse);
     }
 }

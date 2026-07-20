@@ -31,6 +31,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.jpa.domain.Specification;
+import static org.mockito.ArgumentMatchers.eq;
+import java.util.List;
+import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
 
 @ExtendWith(MockitoExtension.class)
 class InterventionServiceTest {
@@ -337,4 +346,62 @@ class InterventionServiceTest {
 
 				assertEquals("Nouveau titre", result.title());
 		}
+
+		@Test
+		void shouldReturnPagedInterventions() {
+
+			Pageable pageable = PageRequest.of(0, 5);
+
+			Intervention intervention = Intervention.builder()
+					.id(1L)
+					.title("Réparation chaudière")
+					.priority(InterventionPriority.HIGH)
+					.status(InterventionStatus.NEW)
+					.build();
+
+
+			Page<Intervention> page =
+					new PageImpl<>(List.of(intervention));
+
+
+			when(interventionRepository.findAll(
+					any(Specification.class),
+					eq(pageable)
+			))
+			.thenReturn(page);
+
+
+			InterventionResponse response =
+					InterventionResponse.builder()
+							.id(1L)
+							.title("Réparation chaudière")
+							.build();
+
+
+			when(interventionMapper.toResponse(intervention))
+					.thenReturn(response);
+
+
+
+			Page<InterventionResponse> result =
+					interventionService.getAllInterventions(
+							new InterventionFilterRequest(
+									InterventionStatus.NEW,
+									InterventionPriority.HIGH,
+									null
+							),
+							pageable
+					);
+
+
+			assertEquals(1, result.getTotalElements());
+			assertEquals("Réparation chaudière",
+					result.getContent().get(0).title());
+
+
+			verify(interventionRepository)
+					.findAll(any(Specification.class), eq(pageable));
+		}
+
+		
 }

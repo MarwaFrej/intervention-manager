@@ -5,5 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface InterventionRepository extends JpaRepository<Intervention, Long> {
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+public interface InterventionRepository 
+        extends JpaRepository<Intervention, Long>,
+                JpaSpecificationExecutor<Intervention> {
+
+    Optional<Intervention> findByTitle(String title);
+
+    boolean existsByTitle(String title);
 }
