@@ -32,6 +32,9 @@ import com.interventionmanager.backend.dto.request.CreateInterventionRequest;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import com.interventionmanager.backend.dto.request.UpdateInterventionRequest;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 
 @WebMvcTest(InterventionController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -155,6 +158,47 @@ class InterventionControllerTest {
 
 				verify(interventionService)
 						.updateIntervention(eq(1L), any(UpdateInterventionRequest.class));
+		}
+
+		@Test
+		@WithMockUser(roles = "ADMIN")
+		void shouldDeleteIntervention() throws Exception {
+
+				doNothing()
+					.when(interventionService)
+					.deleteIntervention(1L);
+
+				mockMvc.perform(
+					delete("/api/interventions/1")
+				)
+					.andExpect(status().isNoContent());
+
+				verify(interventionService)
+					.deleteIntervention(1L);
+		}
+
+		@Test
+		@WithMockUser(roles = "ADMIN")
+		void shouldRejectInvalidIntervention() throws Exception {
+
+				mockMvc.perform(
+					post("/api/interventions")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"title":"",
+									"description":"",
+									"priority":null,
+									"scheduledAt":null,
+									"clientId":null
+								}
+								""")
+				)
+						.andExpect(status().isBadRequest());
+
+
+				verify(interventionService, never())
+						.createIntervention(any());
 		}
 
 }
