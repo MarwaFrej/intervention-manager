@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.interventionmanager.backend.dto.request.UpdateInterventionRequest;
 
 import java.util.List;
 
@@ -60,6 +61,20 @@ public class InterventionController {
         InterventionResponse response =
                 interventionService.getInterventionById(id);
 
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Mettre à jour une intervention par son ID")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<InterventionResponse> updateIntervention(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateInterventionRequest request
+    ) {
+        
+        InterventionResponse response =
+                interventionService.updateIntervention(id, request);
 
         return ResponseEntity.ok(response);
     }

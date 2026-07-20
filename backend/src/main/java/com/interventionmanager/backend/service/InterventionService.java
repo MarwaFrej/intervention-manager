@@ -108,11 +108,9 @@ public class InterventionService {
             intervention.setPriority(request.priority());
         }
 
-
         if (request.status() != null) {
             intervention.setStatus(request.status());
         }
-
 
         if (request.scheduledAt() != null) {
             intervention.setScheduledAt(request.scheduledAt());
