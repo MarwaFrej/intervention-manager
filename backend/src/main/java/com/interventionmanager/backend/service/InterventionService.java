@@ -162,15 +162,15 @@ public class InterventionService {
     }
 
     public InterventionResponse assignTechnicianToIntervention(
-            Long interventionId,
-            Long technicianId
+        Long interventionId,
+        Long technicianId
     ) {
 
         Intervention intervention = interventionRepository.findById(interventionId)
-                .orElseThrow(() -> new InterventionNotFoundException(interventionId));
+            .orElseThrow(() -> new InterventionNotFoundException(interventionId));
 
         User technician = userRepository.findById(technicianId)
-                .orElseThrow(() -> new UserNotFoundException(technicianId));
+            .orElseThrow(() -> new UserNotFoundException(technicianId));
 
         if (technician.getRole() != Role.TECHNICIAN) {
             throw new InvalidTechnicianException(technicianId);

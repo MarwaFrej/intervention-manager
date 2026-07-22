@@ -40,6 +40,11 @@ import org.springframework.data.jpa.domain.Specification;
 import static org.mockito.ArgumentMatchers.eq;
 import java.util.List;
 import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
+import com.interventionmanager.backend.entity.User;
+import com.interventionmanager.backend.entity.enums.Role;
+import com.interventionmanager.backend.repository.UserRepository;
+import com.interventionmanager.backend.exception.UserNotFoundException;
+import com.interventionmanager.backend.exception.InvalidTechnicianException;
 
 @ExtendWith(MockitoExtension.class)
 class InterventionServiceTest {
@@ -52,6 +57,9 @@ class InterventionServiceTest {
 
     @Mock
     private InterventionMapper interventionMapper;
+
+	@Mock	
+	private UserRepository userRepository;
 
     @InjectMocks
     private InterventionService interventionService;
@@ -403,5 +411,97 @@ class InterventionServiceTest {
 					.findAll(any(Specification.class), eq(pageable));
 		}
 
-		
+		@Test
+		void shouldAssignTechnicianSuccessfully() {
+
+			Intervention intervention = Intervention.builder()
+					.id(1L)
+					.title("Réparation chaudière")
+					.build();
+
+
+			User technician = User.builder()
+					.id(2L)
+					.firstName("Ahmed")
+					.lastName("Ben Ali")
+					.role(Role.TECHNICIAN)
+					.build();
+
+
+			when(interventionRepository.findById(1L))
+					.thenReturn(Optional.of(intervention));
+
+
+			when(userRepository.findById(2L))
+					.thenReturn(Optional.of(technician));
+
+
+			when(interventionRepository.save(intervention))
+					.thenReturn(intervention);
+
+
+			InterventionResponse response =
+					InterventionResponse.builder()
+							.id(1L)
+							.technicianId(2L)
+							.technicianName("Ahmed Ben Ali")
+							.build();
+
+
+			when(interventionMapper.toResponse(intervention))
+					.thenReturn(response);
+
+
+			InterventionResponse result =
+					interventionService.assignTechnicianToIntervention(
+							1L,
+							2L
+					);
+
+
+			assertEquals(2L, result.technicianId());
+
+			verify(interventionRepository)
+					.save(intervention);
+		}
+
+		@Test
+		void shouldThrowExceptionWhenAssigningUnknownIntervention() {
+
+			when(interventionRepository.findById(99L))
+					.thenReturn(Optional.empty());
+
+			assertThrows(
+					InterventionNotFoundException.class,
+					() -> interventionService.assignTechnicianToIntervention(
+							99L,
+							2L
+					)
+			);
+
+			verify(userRepository, never())
+					.findById(any());
+		}
+
+		@Test
+		void shouldThrowExceptionWhenTechnicianNotFound() {
+
+			Intervention intervention = Intervention.builder()
+					.id(1L)
+					.build();
+
+			when(interventionRepository.findById(1L))
+					.thenReturn(Optional.of(intervention));
+
+			when(userRepository.findById(99L))
+					.thenReturn(Optional.empty());
+
+			assertThrows(
+					UserNotFoundException.class,
+					() -> interventionService.assignTechnicianToIntervention(
+							1L,
+							99L
+					)
+			);
+		}
 }
