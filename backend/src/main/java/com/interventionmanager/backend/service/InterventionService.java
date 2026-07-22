@@ -19,6 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
 import com.interventionmanager.backend.specification.InterventionSpecification;
+import com.interventionmanager.backend.entity.User;
+import com.interventionmanager.backend.repository.UserRepository;
+import com.interventionmanager.backend.exception.UserNotFoundException;
+import com.interventionmanager.backend.entity.enums.Role;
+import com.interventionmanager.backend.exception.InvalidTechnicianException;
 
 @Service
 public class InterventionService {
@@ -26,16 +31,19 @@ public class InterventionService {
     private final InterventionRepository interventionRepository;
     private final ClientRepository clientRepository;
     private final InterventionMapper interventionMapper;
+    private final UserRepository userRepository;
 
 
     public InterventionService(
             InterventionRepository interventionRepository,
             ClientRepository clientRepository,
-            InterventionMapper interventionMapper
+            InterventionMapper interventionMapper,
+            UserRepository userRepository
     ) {
         this.interventionRepository = interventionRepository;
         this.clientRepository = clientRepository;
         this.interventionMapper = interventionMapper;
+        this.userRepository = userRepository;
     }
 
 
@@ -151,5 +159,28 @@ public class InterventionService {
                 pageable
             )
             .map(interventionMapper::toResponse);
+    }
+
+    public InterventionResponse assignTechnicianToIntervention(
+            Long interventionId,
+            Long technicianId
+    ) {
+
+        Intervention intervention = interventionRepository.findById(interventionId)
+                .orElseThrow(() -> new InterventionNotFoundException(interventionId));
+
+        User technician = userRepository.findById(technicianId)
+                .orElseThrow(() -> new UserNotFoundException(technicianId));
+
+        if (technician.getRole() != Role.TECHNICIAN) {
+            throw new InvalidTechnicianException(technicianId);
+        }
+
+        intervention.setTechnician(technician);
+
+        Intervention updatedIntervention =
+                interventionRepository.save(intervention);
+
+        return interventionMapper.toResponse(updatedIntervention);
     }
 }

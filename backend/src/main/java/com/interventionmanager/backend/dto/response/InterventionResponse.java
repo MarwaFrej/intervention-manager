@@ -16,6 +16,8 @@ public record InterventionResponse(
         LocalDateTime scheduledAt,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        Long clientId
+        Long clientId,
+        Long technicianId,
+        String technicianName
 ) {
 }

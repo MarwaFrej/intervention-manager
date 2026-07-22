@@ -120,4 +120,17 @@ public class InterventionController {
 
         return ResponseEntity.noContent().build();
     }
+
+		@Operation(summary = "Assigner une intervention à un technicien")
+    @PatchMapping("/{interventionId}/assign/{technicianId}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+		public ResponseEntity<InterventionResponse> assignTechnicianToIntervention(
+			@PathVariable Long interventionId,
+			@PathVariable Long technicianId
+    ) {
+        
+        InterventionResponse response =
+				interventionService.assignTechnicianToIntervention(interventionId, technicianId);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -32,6 +32,18 @@ public class InterventionMapper {
                 .scheduledAt(intervention.getScheduledAt())
                 .createdAt(intervention.getCreatedAt())
                 .updatedAt(intervention.getUpdatedAt())
+                .technicianId(
+                    intervention.getTechnician() != null
+                        ? intervention.getTechnician().getId()
+                        : null
+                )
+                .technicianName(
+                    intervention.getTechnician() != null
+                        ? intervention.getTechnician().getFirstName()
+                        + " "
+                        + intervention.getTechnician().getLastName()
+                        : null
+                )
                 .build();
     }
 }

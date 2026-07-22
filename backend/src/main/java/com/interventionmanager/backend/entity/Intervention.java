@@ -49,6 +49,10 @@ public class Intervention {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "technician_id")
+    private User technician;
+
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();
@@ -59,6 +63,5 @@ public class Intervention {
     public void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
     
 }
