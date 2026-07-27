@@ -2,6 +2,7 @@ package com.interventionmanager.backend.repository;
 
 import com.interventionmanager.backend.entity.Intervention;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.interventionmanager.backend.entity.enums.InterventionStatus;
 
 import java.util.Optional;
 
@@ -14,4 +15,5 @@ public interface InterventionRepository
     Optional<Intervention> findByTitle(String title);
 
     boolean existsByTitle(String title);
+    long countByStatus(InterventionStatus status);
 }
