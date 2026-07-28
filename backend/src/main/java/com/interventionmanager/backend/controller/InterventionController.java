@@ -19,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
 import com.interventionmanager.backend.dto.response.PageResponse;
 import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
+import com.interventionmanager.backend.dto.request.UpdateInterventionStatusRequest;
 
 import java.util.List;
 
@@ -27,9 +28,7 @@ import java.util.List;
 @RequestMapping("/api/interventions")
 public class InterventionController {
 
-
     private final InterventionService interventionService;
-
 
     public InterventionController(InterventionService interventionService) {
         this.interventionService = interventionService;
@@ -150,5 +149,22 @@ public class InterventionController {
 					pageable
 				)
 			);
+		}
+
+		@Operation(summary = "Modifier le statut d'une intervention")
+		@PatchMapping("/{id}/status")
+		@PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
+		public ResponseEntity<InterventionResponse> updateStatus(
+			@PathVariable Long id,
+			@Valid @RequestBody UpdateInterventionStatusRequest request
+		) {
+
+			InterventionResponse response =
+				interventionService.updateStatus(
+					id,
+					request
+				);
+
+				return ResponseEntity.ok(response);
 		}
 }

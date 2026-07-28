@@ -25,6 +25,7 @@ import com.interventionmanager.backend.exception.UserNotFoundException;
 import com.interventionmanager.backend.entity.enums.Role;
 import com.interventionmanager.backend.exception.InvalidTechnicianException;
 import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
+import com.interventionmanager.backend.dto.request.UpdateInterventionStatusRequest;
 
 @Service
 public class InterventionService {
@@ -200,4 +201,57 @@ public class InterventionService {
             interventionMapper::toResponse
         );
     }
+
+    public InterventionResponse updateStatus(
+			Long interventionId,
+			UpdateInterventionStatusRequest request
+		) {
+
+				Intervention intervention =
+					interventionRepository.findById(interventionId)
+						.orElseThrow(
+								() -> new InterventionNotFoundException(interventionId)
+						);
+
+				validateStatusTransition(
+					intervention.getStatus(),
+					request.status()
+				);
+
+				intervention.setStatus(request.status());
+
+				Intervention saved =
+					interventionRepository.save(intervention);
+
+				return interventionMapper.toResponse(saved);
+		}
+
+		private void validateStatusTransition(
+			InterventionStatus current,
+			InterventionStatus next
+		) {
+
+				if(current == InterventionStatus.COMPLETED) {
+
+						throw new IllegalStateException(
+								"Une intervention terminée ne peut pas être modifiée"
+						);
+				}
+
+				if(current == InterventionStatus.CANCELED) {
+
+						throw new IllegalStateException(
+								"Une intervention annulée ne peut pas être modifiée"
+						);
+				}
+
+				if(current == InterventionStatus.NEW
+								&& next == InterventionStatus.COMPLETED) {
+
+						throw new IllegalStateException(
+								"Une intervention doit être prise en charge avant d'être terminée"
+						);
+				}
+
+		}
 }
