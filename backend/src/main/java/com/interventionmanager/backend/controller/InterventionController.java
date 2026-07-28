@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 
 import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
 import com.interventionmanager.backend.dto.response.PageResponse;
+import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class InterventionController {
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
 		public ResponseEntity<PageResponse<InterventionResponse>> getAllInterventions(
 			InterventionFilterRequest filter,
+			InterventionSearchRequest searchRequest,
 
 			@PageableDefault(
 				size = 10,
@@ -133,4 +135,20 @@ public class InterventionController {
 				interventionService.assignTechnicianToIntervention(interventionId, technicianId);
         return ResponseEntity.ok(response);
     }
+
+		@Operation(summary = "Recherche avancée des interventions")
+		@GetMapping("/search")
+		@PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
+		public ResponseEntity<Page<InterventionResponse>> search(
+			InterventionSearchRequest request,
+			Pageable pageable
+		) {
+
+			return ResponseEntity.ok(
+				interventionService.searchInterventions(
+					request,
+					pageable
+				)
+			);
+		}
 }

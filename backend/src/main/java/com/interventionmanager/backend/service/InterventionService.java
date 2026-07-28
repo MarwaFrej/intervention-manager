@@ -24,6 +24,7 @@ import com.interventionmanager.backend.repository.UserRepository;
 import com.interventionmanager.backend.exception.UserNotFoundException;
 import com.interventionmanager.backend.entity.enums.Role;
 import com.interventionmanager.backend.exception.InvalidTechnicianException;
+import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
 
 @Service
 public class InterventionService {
@@ -182,5 +183,21 @@ public class InterventionService {
                 interventionRepository.save(intervention);
 
         return interventionMapper.toResponse(updatedIntervention);
+    }
+
+    public Page<InterventionResponse> searchInterventions(
+        InterventionSearchRequest request,
+        Pageable pageable
+    ) {
+
+        Page<Intervention> interventions =
+            interventionRepository.findAll(
+                InterventionSpecification.withFilters(request),
+                pageable
+            );
+
+        return interventions.map(
+            interventionMapper::toResponse
+        );
     }
 }
