@@ -20,6 +20,7 @@ import com.interventionmanager.backend.dto.request.InterventionFilterRequest;
 import com.interventionmanager.backend.dto.response.PageResponse;
 import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
 import com.interventionmanager.backend.dto.request.UpdateInterventionStatusRequest;
+import com.interventionmanager.backend.dto.response.InterventionHistoryResponse;
 
 import java.util.List;
 
@@ -166,5 +167,16 @@ public class InterventionController {
 				);
 
 				return ResponseEntity.ok(response);
+		}
+
+		@GetMapping("/{id}/history")
+		@PreAuthorize("hasAnyRole('ADMIN','MANAGER','TECHNICIAN')")
+		public ResponseEntity<List<InterventionHistoryResponse>> getHistory(
+			@PathVariable Long id
+		) {
+
+				return ResponseEntity.ok(
+						interventionService.getHistory(id)
+				);
 		}
 }

@@ -4,6 +4,8 @@ import com.interventionmanager.backend.dto.response.InterventionResponse;
 import com.interventionmanager.backend.dto.request.CreateInterventionRequest;
 import com.interventionmanager.backend.entity.Intervention;
 import org.springframework.stereotype.Component;
+import com.interventionmanager.backend.dto.response.InterventionHistoryResponse;
+import com.interventionmanager.backend.entity.InterventionHistory;
 
 @Component
 public class InterventionMapper {
@@ -45,5 +47,17 @@ public class InterventionMapper {
                         : null
                 )
                 .build();
+    }
+
+    public InterventionHistoryResponse toHistoryResponse(
+        InterventionHistory history
+    ) {
+
+        return InterventionHistoryResponse.builder()
+            .id(history.getId())
+            .oldStatus(history.getOldStatus())
+            .newStatus(history.getNewStatus())
+            .changedAt(history.getChangedAt())
+            .build();
     }
 }

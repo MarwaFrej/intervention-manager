@@ -26,6 +26,10 @@ import com.interventionmanager.backend.entity.enums.Role;
 import com.interventionmanager.backend.exception.InvalidTechnicianException;
 import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
 import com.interventionmanager.backend.dto.request.UpdateInterventionStatusRequest;
+import com.interventionmanager.backend.entity.InterventionHistory;
+import com.interventionmanager.backend.entity.enums.InterventionStatus;
+import com.interventionmanager.backend.repository.InterventionHistoryRepository;
+import com.interventionmanager.backend.dto.response.InterventionHistoryResponse;
 
 @Service
 public class InterventionService {
@@ -34,18 +38,21 @@ public class InterventionService {
     private final ClientRepository clientRepository;
     private final InterventionMapper interventionMapper;
     private final UserRepository userRepository;
+		private final InterventionHistoryRepository historyRepository;
 
 
     public InterventionService(
             InterventionRepository interventionRepository,
             ClientRepository clientRepository,
             InterventionMapper interventionMapper,
-            UserRepository userRepository
+            UserRepository userRepository,
+						InterventionHistoryRepository historyRepository
     ) {
         this.interventionRepository = interventionRepository;
         this.clientRepository = clientRepository;
         this.interventionMapper = interventionMapper;
         this.userRepository = userRepository;
+				this.historyRepository = historyRepository;
     }
 
 
@@ -207,23 +214,26 @@ public class InterventionService {
 			UpdateInterventionStatusRequest request
 		) {
 
-				Intervention intervention =
-					interventionRepository.findById(interventionId)
-						.orElseThrow(
-								() -> new InterventionNotFoundException(interventionId)
-						);
+				Intervention intervention = interventionRepository.findById(interventionId)
+        .orElseThrow(() -> new InterventionNotFoundException(interventionId));
 
-				validateStatusTransition(
-					intervention.getStatus(),
-					request.status()
-				);
+				InterventionStatus previousStatus = intervention.getStatus();
 
 				intervention.setStatus(request.status());
 
-				Intervention saved =
-					interventionRepository.save(intervention);
+				Intervention saved = interventionRepository.save(intervention);
 
-				return interventionMapper.toResponse(saved);
+				if (previousStatus != saved.getStatus()) {
+						historyRepository.save(
+								InterventionHistory.builder()
+												.intervention(saved)
+												.oldStatus(previousStatus)
+												.newStatus(saved.getStatus())
+												.build()
+						);
+				}
+
+			return interventionMapper.toResponse(saved);
 		}
 
 		private void validateStatusTransition(
@@ -254,4 +264,14 @@ public class InterventionService {
 				}
 
 		}
+
+		public List<InterventionHistoryResponse> getHistory(Long interventionId) {
+
+			return historyRepository
+				.findByInterventionIdOrderByChangedAtDesc(interventionId)
+				.stream()
+				.map(interventionMapper::toHistoryResponse)
+				.toList();
+		}
+
 }
