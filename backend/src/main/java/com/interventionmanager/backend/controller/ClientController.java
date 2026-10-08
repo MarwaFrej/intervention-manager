@@ -13,9 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.interventionmanager.backend.dto.request.UpdateClientRequest;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 import java.util.List;
 
@@ -64,5 +68,17 @@ public class ClientController {
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         clientService.deleteClient(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Modifier un client")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<ClientResponse> updateClient(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateClientRequest request
+    ) {
+        ClientResponse response = clientService.updateClient(id, request);
+
+        return ResponseEntity.ok(response);
     }
 }

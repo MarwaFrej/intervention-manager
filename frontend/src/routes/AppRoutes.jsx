@@ -15,6 +15,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import InterventionDetail from "../pages/InterventionDetail";
 import InterventionEdit from "../pages/InterventionEdit";
 import InterventionCreate from "../pages/InterventionCreate";
+import ClientCreate from "../pages/ClientCreate";
+import ClientEdit from "../pages/ClientEdit";
+import ClientDetail from "../pages/ClientDetail";
 
 function AppRoutes() {
   return (
@@ -32,6 +35,12 @@ function AppRoutes() {
       <Route path="/interventions/:id" element={<InterventionDetail />}/>
       <Route path="/interventions/:id/edit" element={<InterventionEdit />}/>
       <Route path="/interventions/new" element={<InterventionCreate />}/>
+
+      <Route path="/clients" element={<Clients />} />
+      <Route path="/clients/new" element={<ClientCreate />} />
+      <Route path="/clients/:id/edit" element={<ClientEdit />} />
+      <Route path="/clients/:id" element={<ClientDetail />} />
+
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
       <Route path="*" element={<NotFound />} />
