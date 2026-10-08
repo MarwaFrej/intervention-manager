@@ -12,6 +12,9 @@ import Login from "../pages/Login";
 import NotFound from "../pages/NotFound";
 import Users from "../pages/Users";
 import ProtectedRoute from "./ProtectedRoute";
+import InterventionDetail from "../pages/InterventionDetail";
+import InterventionEdit from "../pages/InterventionEdit";
+import InterventionCreate from "../pages/InterventionCreate";
 
 function AppRoutes() {
   return (
@@ -26,7 +29,9 @@ function AppRoutes() {
           <Route path="/users" element={<Users />} />
         </Route>
       </Route>
-
+      <Route path="/interventions/:id" element={<InterventionDetail />}/>
+      <Route path="/interventions/:id/edit" element={<InterventionEdit />}/>
+      <Route path="/interventions/new" element={<InterventionCreate />}/>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
       <Route path="*" element={<NotFound />} />
