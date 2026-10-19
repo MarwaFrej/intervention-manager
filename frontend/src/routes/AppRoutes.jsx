@@ -18,6 +18,9 @@ import InterventionCreate from "../pages/InterventionCreate";
 import ClientCreate from "../pages/ClientCreate";
 import ClientEdit from "../pages/ClientEdit";
 import ClientDetail from "../pages/ClientDetail";
+import UserCreate from "../pages/UserCreate";
+import UserEdit from "../pages/UserEdit";
+import UserDetail from "../pages/UserDetail";
 
 function AppRoutes() {
   return (
@@ -40,6 +43,11 @@ function AppRoutes() {
       <Route path="/clients/new" element={<ClientCreate />} />
       <Route path="/clients/:id/edit" element={<ClientEdit />} />
       <Route path="/clients/:id" element={<ClientDetail />} />
+
+      <Route path="/users" element={<Users />} />
+      <Route path="/users/new" element={<UserCreate />} />
+      <Route path="/users/:id/edit" element={<UserEdit />} />
+      <Route path="/users/:id" element={<UserDetail />} /> 
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 

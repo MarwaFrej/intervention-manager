@@ -49,7 +49,28 @@ public class UserService {
         return userMapper.toResponse(savedUser);
     }
 
+    public UserResponse getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        return userMapper.toResponse(user);
+    }
+
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    public UserResponse updateUser(Long userId, CreateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
+        user.setRole(request.role());
+
+        User updatedUser = userRepository.save(user);
+
+        return userMapper.toResponse(updatedUser);
     }
 }

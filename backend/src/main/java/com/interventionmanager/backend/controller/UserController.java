@@ -44,11 +44,25 @@ public class UserController {
             return userService.createUser(request);
         }
 
-    @Operation(summary = "Obtenir un utilisateur par son ID")
+    @Operation(summary = "Supprimer un utilisateur par son ID")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Obtenir un utilisateur par son ID")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+
+    @Operation(summary = "Mettre à jour un utilisateur par son ID")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody CreateUserRequest request) {
+        return userService.updateUser(id, request);
     }
 }
