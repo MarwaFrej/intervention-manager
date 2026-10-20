@@ -71,6 +71,14 @@ public class ClientService {
             client.setLastName(request.lastName());
         }
 
+        if (request.phoneNumber() != null) {
+            client.setPhoneNumber(request.phoneNumber());
+        }
+
+        if (request.address() != null) {
+            client.setAddress(request.address());
+        }
+
         if (request.email() != null) {
 
             if (!client.getEmail().equals(request.email())

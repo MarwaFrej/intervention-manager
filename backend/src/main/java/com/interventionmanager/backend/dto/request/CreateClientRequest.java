@@ -22,5 +22,14 @@ public record CreateClientRequest(
 
     @Email(message = "Email invalide")
     @NotBlank(message = "L'email est obligatoire")
-    String email
+    String email,
+
+    @Size(
+        max = 15,
+        message = "Le numéro de téléphone ne doit pas dépasser 15 caractères"
+    )
+    String phoneNumber,
+
+    String address
+
 ) {}

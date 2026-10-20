@@ -30,6 +30,11 @@ public class Client {
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 
+    @Column(length = 15, name = "phone_number")
+    private String phoneNumber;
+
+    @Column(length = 255, name = "address")
+    private String address;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -154,6 +154,50 @@ function ClientCreate() {
               className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             />
           </div>
+
+          {/* Phone number */}
+          <div>
+            <label
+              htmlFor="phoneNumber"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Numéro de téléphone
+            </label>
+
+            <input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="text"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              required
+              maxLength={15}
+              placeholder="Ex. 0123456789"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Address */}
+          <div>
+            <label
+              htmlFor="address"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Adresse
+            </label>
+
+            <input
+              id="address"
+              name="address"
+              type="text"
+              value={form.address}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. 123 Rue de la Paix, 75000 Paris"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
         </div>
 
         {/* Actions */}

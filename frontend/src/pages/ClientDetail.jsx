@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Mail, Pencil, User } from "lucide-react";
+import { ArrowLeft, Mail, Pencil, User, Home, Phone } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 
 import { getClient } from "../services/clientService";
@@ -140,6 +140,40 @@ function ClientDetail() {
 
               <p className="mt-1 text-sm font-semibold text-slate-900">
                 {client.email}
+              </p>
+            </div>
+          </div>
+
+          {/* Phone Number */}
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+              <Phone size={19} />
+            </div>
+
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                Numéro de téléphone
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {client.phoneNumber}
+              </p>
+            </div>
+          </div>
+
+          {/* Address */}
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+              <Home size={19} />
+            </div>
+
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                Adresse
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {client.address}
               </p>
             </div>
           </div>

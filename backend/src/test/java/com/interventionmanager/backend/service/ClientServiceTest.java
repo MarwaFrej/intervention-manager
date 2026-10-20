@@ -52,6 +52,8 @@ class ClientServiceTest {
                 .firstName("Marwa")
                 .lastName("Test")
                 .email("marwa@test.com")
+                .phoneNumber("1234567890")
+                .address("123 Main St")
                 .build();
 
 
@@ -60,6 +62,8 @@ class ClientServiceTest {
                 .firstName("Marwa")
                 .lastName("Test")
                 .email("marwa@test.com")
+                .phoneNumber("1234567890")
+                .address("123 Main St")
                 .build();
 
 
@@ -115,7 +119,9 @@ class ClientServiceTest {
         new CreateClientRequest(
             "Marwa",
             "Test",
-            "marwa@test.com"
+            "marwa@test.com",
+            "1234567890",
+            "123 Main St"
         );
 
 
@@ -123,6 +129,8 @@ class ClientServiceTest {
         .firstName("Marwa")
         .lastName("Test")
         .email("marwa@test.com")
+        .phoneNumber("1234567890")
+        .address("123 Main St")
         .build();
 
     Client savedClient = Client.builder()
@@ -130,6 +138,8 @@ class ClientServiceTest {
         .firstName("Marwa")
         .lastName("Test")
         .email("marwa@test.com")
+        .phoneNumber("1234567890")
+        .address("123 Main St")
         .build();
 
     ClientResponse response =
@@ -138,6 +148,8 @@ class ClientServiceTest {
             .firstName("Marwa")
             .lastName("Test")
             .email("marwa@test.com")
+            .phoneNumber("1234567890")
+            .address("123 Main St") 
             .build();
 
     when(clientRepository.existsByEmail(request.email()))
@@ -174,7 +186,9 @@ class ClientServiceTest {
             new CreateClientRequest(
                 "Marwa",
                 "Test",
-                "marwa@test.com"
+                "marwa@test.com",
+                "1234567890",
+                "123 Main St"
             );
 
         when(clientRepository.existsByEmail(request.email()))

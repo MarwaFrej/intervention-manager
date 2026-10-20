@@ -15,6 +15,8 @@ function ClientEdit() {
     firstName: "",
     lastName: "",
     email: "",
+    phoneNumber: "",
+    address: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -28,11 +30,14 @@ function ClientEdit() {
         setError("");
 
         const client = await getClient(id);
+        console.log(client);
 
         setForm({
           firstName: client.firstName ?? "",
           lastName: client.lastName ?? "",
           email: client.email ?? "",
+          phoneNumber: client.phoneNumber ?? "",
+          address: client.address ?? "",
         });
       } catch (err) {
         console.error(err);
@@ -69,6 +74,8 @@ function ClientEdit() {
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         email: form.email.trim(),
+        phoneNumber: form.phoneNumber.trim(),
+        address: form.address.trim(),
       };
 
       await updateClient(id, payload);
@@ -198,6 +205,46 @@ function ClientEdit() {
               value={form.email}
               onChange={handleChange}
               required
+              maxLength={255}
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Phone Number */}
+          <div>
+            <label
+              htmlFor="phoneNumber"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Numéro de téléphone
+            </label>
+
+            <input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="number"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              maxLength={15}
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Address */}
+          <div>
+            <label
+              htmlFor="address"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Adresse
+            </label>
+
+            <input
+              id="address"
+              name="address"
+              type="text"
+              value={form.address}
+              onChange={handleChange}
               maxLength={255}
               className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             />

@@ -12,6 +12,13 @@ public record UpdateClientRequest(
         String lastName,
 
         @Email(message = "Email invalide")
-        String email
+        String email,
+
+        @Size(
+                max = 15,
+                message = "Le numéro de téléphone ne doit pas dépasser 15 caractères"
+        )
+        String phoneNumber,
+        String address
 
 ) {}

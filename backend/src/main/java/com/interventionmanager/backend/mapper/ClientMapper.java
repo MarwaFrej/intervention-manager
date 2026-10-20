@@ -13,6 +13,8 @@ public class ClientMapper {
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
+                .phoneNumber(request.phoneNumber())
+                .address(request.address())
                 .build();
     }
 
@@ -23,6 +25,8 @@ public class ClientMapper {
                 .firstName(client.getFirstName())
                 .lastName(client.getLastName())
                 .email(client.getEmail())
+                .phoneNumber(client.getPhoneNumber())
+                .address(client.getAddress())
                 .build();
     }
 }
