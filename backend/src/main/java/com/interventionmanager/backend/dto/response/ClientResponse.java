@@ -7,6 +7,8 @@ public record ClientResponse(
         Long id,
         String firstName,
         String lastName,
-        String email
+        String email,
+        String phoneNumber,     
+        String address
 ) {
 }
