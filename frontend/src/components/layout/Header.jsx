@@ -1,15 +1,36 @@
 import { Bell, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 function Header() {
   
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [role, setRole] = useState("");
   
   const handleLogout = () => {
     localStorage.removeItem("token");
     // Réinitialiser ici l'état utilisateur et l'état d'authentification
     navigate("/login");
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const role = decodedToken.role;
+      if (role?.length > 0 && role[0] === "ROLE_ADMIN") {
+        setRole("Administrateur");
+      } else if (role?.length > 0 && role[0] === "ROLE_TECHNICIAN") {
+        setRole("Technicien");
+      } else if (role?.length > 0 && role[0] === "ROLE_CLIENT") {
+        setRole("Client");
+      }
+      setUsername(decodedToken.sub);
+    }
+  }, []);
+
 
 
   return (
@@ -33,16 +54,16 @@ function Header() {
 
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
-            M
+            {username.charAt(0).toLocaleUpperCase()}
           </div>
 
           <div className="hidden sm:block">
             <p className="text-sm font-semibold text-slate-900">
-              Marwa
+              {username}
             </p>
 
             <p className="text-xs text-slate-500">
-              Administrateur
+              {role}
             </p>
           </div>
         </div>
