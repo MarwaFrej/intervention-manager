@@ -30,6 +30,11 @@ import com.interventionmanager.backend.entity.InterventionHistory;
 import com.interventionmanager.backend.entity.enums.InterventionStatus;
 import com.interventionmanager.backend.repository.InterventionHistoryRepository;
 import com.interventionmanager.backend.dto.response.InterventionHistoryResponse;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Service
 public class InterventionService {
@@ -55,15 +60,44 @@ public class InterventionService {
 				this.historyRepository = historyRepository;
     }
 
+    private User getCurrentUser() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
 
-    public List<InterventionResponse> getAllInterventions() {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new AccessDeniedException("Utilisateur non authentifié");
+        }
 
-        return interventionRepository.findAll()
-                .stream()
-                .map(interventionMapper::toResponse)
-                .toList();
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("Utilisateur introuvable"));
+        }
+
+    @Transactional(readOnly = true)
+    public Page<InterventionResponse> getAllInterventions(
+            InterventionFilterRequest filter,
+            Pageable pageable
+    ) {
+        User user = getCurrentUser();
+
+        return switch (user.getRole()) {
+            case TECHNICIAN -> interventionRepository
+                    .findAllByTechnicianId(user.getId(), pageable)
+                    .map(interventionMapper::toResponse);
+
+            case ADMIN, MANAGER -> interventionRepository
+                    .findAll(pageable)
+                    .map(interventionMapper::toResponse);
+
+            default -> throw new IllegalStateException(
+                    "Le rôle de l'utilisateur n'est pas pris en charge"
+            );
+        };
     }
-
 
     public InterventionResponse createIntervention(CreateInterventionRequest request) {
 
@@ -88,10 +122,12 @@ public class InterventionService {
     }
 
 
+    @Transactional(readOnly = true)
     public InterventionResponse getInterventionById(Long id) {
-
         Intervention intervention = interventionRepository.findById(id)
-                .orElseThrow(() -> new InterventionNotFoundException(id));
+            .orElseThrow(() -> new InterventionNotFoundException(
+                 id
+            ));
 
         return interventionMapper.toResponse(intervention);
     }
@@ -156,20 +192,32 @@ public class InterventionService {
 
         return interventionMapper.toResponse(updatedIntervention);
     }
+        
+    // @Transactional(readOnly = true)
+    // public Page<InterventionResponse> getAllInterventions(
+    //         InterventionFilterRequest filter,
+    //         Pageable pageable,
+    //         Long userId
+    // ) {
+    //     User user = userRepository.findById(userId)
+    //             .orElseThrow(() -> new UserNotFoundException(userId));
 
-    public Page<InterventionResponse> getAllInterventions(
-        InterventionFilterRequest filter,
-        Pageable pageable
-    ) {
+    //     return switch (user.getRole()) {
+    //         case TECHNICIAN -> interventionRepository
+    //                 .findAllByTechnicianId(user.getId(), pageable)
+    //                 .map(interventionMapper::toResponse);
 
-        return interventionRepository
-            .findAll(
-                InterventionSpecification.filter(filter),
-                pageable
-            )
-            .map(interventionMapper::toResponse);
-    }
+    //         case ADMIN -> interventionRepository
+    //                 .findAll(pageable)
+    //                 .map(interventionMapper::toResponse);
 
+    //         default -> throw new IllegalStateException(
+    //                 "Le rôle de l'utilisateur n'est pas pris en charge"
+    //         );
+    //     };
+    // }
+
+    @Transactional
     public InterventionResponse assignTechnicianToIntervention(
         Long interventionId,
         Long technicianId

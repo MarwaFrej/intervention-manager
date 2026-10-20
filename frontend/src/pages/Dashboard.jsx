@@ -10,11 +10,13 @@ import {
 
 import StatCard from "../components/dashboard/StatCard";
 import { getDashboard } from "../services/dashboardService";
+import { jwtDecode } from "jwt-decode";
 
 function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [allowClients, setAllowClients] = useState(false);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -34,6 +36,20 @@ function Dashboard() {
 
     loadDashboard();
   }, []);
+
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const role = decodedToken.role;
+        
+        if (role?.length > 0 && role[0] === "ROLE_ADMIN") {
+          setAllowClients(true);
+        } else {
+          setAllowClients(false);
+        }
+      }
+    }, []);
 
   if (loading) {
     return (
@@ -86,19 +102,22 @@ function Dashboard() {
         </p>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 ">
+        {allowClients && (
+          <StatCard
           title="Total clients"
           value={stats.totalClients}
           icon={Users}
           description="Clients enregistrés"
-        />
+          color="bg-blue-100 text-blue-700"
+        />)}
 
         <StatCard
           title="Total interventions"
           value={stats.totalInterventions}
           icon={BriefcaseBusiness}
           description="Interventions enregistrées"
+          color="bg-purple-100 text-purple-700"
         />
 
         <StatCard
@@ -106,6 +125,7 @@ function Dashboard() {
           value={stats.newInterventions}
           icon={Zap}
           description="À traiter"
+          color="bg-yellow-100 text-yellow-700"
         />
 
         <StatCard
@@ -113,6 +133,7 @@ function Dashboard() {
           value={stats.inProgressInterventions}
           icon={Clock3}
           description="Interventions en cours"
+          color="bg-orange-100 text-orange-700"
         />
 
         <StatCard
@@ -120,6 +141,7 @@ function Dashboard() {
           value={stats.completedInterventions}
           icon={CheckCircle2}
           description="Interventions terminées"
+          color="bg-green-100 text-green-700"
         />
 
         <StatCard
@@ -127,6 +149,7 @@ function Dashboard() {
           value={stats.cancelledInterventions}
           icon={XCircle}
           description="Interventions annulées"
+          color="bg-red-100 text-red-700"
         />
       </div>
     </div>

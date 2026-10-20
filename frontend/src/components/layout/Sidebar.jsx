@@ -6,6 +6,8 @@ import {
   Users,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 const navigation = [
   {
@@ -31,6 +33,25 @@ const navigation = [
 ];
 
 function Sidebar() {
+
+  const [navigationList, setNavigationList] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const role = decodedToken.role;
+      
+      if (role?.length > 0 && role[0] === "ROLE_ADMIN") {
+        setNavigationList(navigation);
+      } else if (role?.length > 0 && role[0] === "ROLE_TECHNICIAN") {
+        setNavigationList(navigation.filter(item => item.label !== "Utilisateurs" && item.label !== "Clients"));
+      } else if (role?.length > 0 && role[0] === "ROLE_CLIENT") {
+        setNavigationList(navigation.filter(item => item.label !== "Utilisateurs" && item.label !== "Interventions" && item.label !== "Dashboard"));
+      }
+    }
+  }, []);
+
   return (
     <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-200 bg-white">
       <div className="flex h-16 items-center border-b border-slate-200 px-6">
@@ -46,7 +67,7 @@ function Sidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
-        {navigation.map((item) => {
+        {navigationList?.map((item) => {
           const Icon = item.icon;
 
           return (

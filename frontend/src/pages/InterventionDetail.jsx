@@ -14,7 +14,11 @@ import {
   getIntervention,
   getInterventionHistory,
   updateInterventionStatus,
+  assignTechnician,
 } from "../services/interventionService";
+
+import { getTechnicians } from "../services/userService";
+import { UserCheck } from "lucide-react";
 
 const statusLabels = {
   NEW: "Nouvelle",
@@ -70,6 +74,13 @@ function InterventionDetail() {
 
   const [error, setError] = useState("");
 
+  const [technicians, setTechnicians] = useState([]);
+  const [selectedTechnicianId, setSelectedTechnicianId] = useState("");
+  const [loadingTechnicians, setLoadingTechnicians] = useState(true);
+  const [assigningTechnician, setAssigningTechnician] = useState(false);
+  const [assignmentError, setAssignmentError] = useState("");
+  const [assignmentSuccess, setAssignmentSuccess] = useState("");
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -77,7 +88,9 @@ function InterventionDetail() {
         setError("");
 
         const data = await getIntervention(id);
-
+        setSelectedTechnicianId(
+          data.technicianId != null ? String(data.technicianId) : ""
+        );
         setIntervention(data);
         setStatus(data.status);
       } catch (err) {
@@ -138,6 +151,54 @@ function InterventionDetail() {
       setError("Impossible de modifier le statut.");
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadTechnicians = async () => {
+      try {
+        setLoadingTechnicians(true);
+        const data = await getTechnicians();
+        setTechnicians(data);
+      } catch (err) {
+        console.error(err);
+        setAssignmentError("Impossible de charger les techniciens.");
+      } finally {
+        setLoadingTechnicians(false);
+      }
+    };
+
+    loadTechnicians();
+  }, []);
+
+  const handleAssignTechnician = async () => {
+    if (!selectedTechnicianId) {
+      setAssignmentError("Sélectionne un technicien.");
+      return;
+    }
+
+    try {
+      setAssigningTechnician(true);
+      setAssignmentError("");
+      setAssignmentSuccess("");
+
+      await assignTechnician(id, Number(selectedTechnicianId));
+
+      const updatedIntervention = await getIntervention(id);
+
+      setIntervention(updatedIntervention);
+      setSelectedTechnicianId(
+        updatedIntervention.technicianId != null
+          ? String(updatedIntervention.technicianId)
+          : ""
+      );
+
+      setAssignmentSuccess("Technicien affecté avec succès.");
+    } catch (err) {
+      console.error(err);
+      setAssignmentError("Impossible d'affecter le technicien.");
+    } finally {
+      setAssigningTechnician(false);
     }
   };
 
@@ -397,6 +458,65 @@ function InterventionDetail() {
                 Mise à jour...
               </p>
             )}
+          </div>
+
+          {/* Technician assignment */}
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <UserCheck size={19} className="text-slate-500" />
+              <h2 className="font-semibold text-slate-900">
+                Affectation du technicien
+              </h2>
+            </div>
+
+            <p className="mb-3 text-sm text-slate-500">
+              Technicien actuel :{" "}
+              <span className="font-medium text-slate-800">
+                {intervention.technicianName || "Non assigné"}
+              </span>
+            </p>
+
+          {loadingTechnicians ? ( <p className="text-sm text-slate-500">
+          Chargement des techniciens... </p>
+          ) : (
+          <>
+          <select
+          value={selectedTechnicianId}
+          onChange={(event) =>
+          setSelectedTechnicianId(event.target.value)
+          }
+          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+          > <option value="">Choisir un technicien</option>
+
+
+              {technicians.map((technician) => (
+                <option key={technician.id} value={String(technician.id)}>
+                  {technician.firstName} {technician.lastName}
+                </option>
+              ))}
+            </select>
+
+            <button
+              type="button"
+              onClick={handleAssignTechnician}
+              disabled={!selectedTechnicianId || assigningTechnician}
+              className="mt-3 w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {assigningTechnician ? "Affectation..." : "Affecter"}
+            </button>
+          </>
+
+
+          )}
+
+          {assignmentError && ( <p className="mt-3 text-sm text-red-600">
+          {assignmentError} </p>
+          )}
+
+          {assignmentSuccess && ( <p className="mt-3 text-sm text-emerald-700">
+          {assignmentSuccess} </p>
+          )}
+
           </div>
 
           {/* Metadata */}

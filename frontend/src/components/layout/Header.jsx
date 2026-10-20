@@ -1,6 +1,17 @@
 import { Bell, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    // Réinitialiser ici l'état utilisateur et l'état d'authentification
+    navigate("/login");
+  };
+
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
       <div>
@@ -39,6 +50,7 @@ function Header() {
         <button
           type="button"
           className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100"
+          onClick={handleLogout}
           aria-label="Déconnexion"
         >
           <LogOut size={19} />

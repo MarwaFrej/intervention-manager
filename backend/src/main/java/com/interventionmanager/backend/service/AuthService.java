@@ -6,6 +6,8 @@ import com.interventionmanager.backend.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 
 
 @Service
@@ -27,17 +29,20 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
 
+			Authentication authentication =
+				authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+						request.email(),
+						request.password()
+					)
+				);
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
 
+				UserDetails userDetails =
+								(UserDetails) authentication.getPrincipal();
 
         String token = jwtService.generateToken(
-                request.email()
+                userDetails
         );
 
 

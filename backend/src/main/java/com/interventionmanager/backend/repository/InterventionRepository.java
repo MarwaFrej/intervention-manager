@@ -7,6 +7,8 @@ import com.interventionmanager.backend.entity.enums.InterventionStatus;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface InterventionRepository 
         extends JpaRepository<Intervention, Long>,
@@ -16,4 +18,7 @@ public interface InterventionRepository
 
     boolean existsByTitle(String title);
     long countByStatus(InterventionStatus status);
+    long countByTechnician_Id(Long technicianId);
+    long countByTechnician_IdAndStatus(Long technicianId, InterventionStatus status);
+		Page<Intervention> findAllByTechnicianId(Long technicianId, Pageable pageable);
 }

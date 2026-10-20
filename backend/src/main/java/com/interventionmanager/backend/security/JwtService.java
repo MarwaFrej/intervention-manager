@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -23,10 +25,17 @@ public class JwtService {
     }
 
 
-    public String generateToken(String email) {
+    public String generateToken(UserDetails userDetails) {
 
         return Jwts.builder()
-                .subject(email)
+                .subject(userDetails.getUsername())
+               .claim(
+                "role",
+                userDetails.getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .toList()
+            )
                 .issuedAt(new Date())
                 .expiration(
                         new Date(System.currentTimeMillis() + 86400000)
