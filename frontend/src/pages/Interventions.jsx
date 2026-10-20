@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Eye, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { getInterventions } from "../services/interventionService";
 import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const statusLabels = {
   NEW: "Nouvelle",
@@ -56,6 +57,7 @@ function Interventions() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [role, setRole] = useState("");
 
   const loadInterventions = async () => {
     try {
@@ -109,6 +111,14 @@ function Interventions() {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setRole(decodedToken.role ?? decodedToken.role.length > 0 ? decodedToken.role[0] : "");
+    }
+  }, [role]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -122,6 +132,9 @@ function Interventions() {
             Gérez et suivez les interventions de vos clients.
           </p>
         </div>
+        {
+          role === "ROLE_ADMIN" && (
+        
 
         <Link
           to="/interventions/new"
@@ -129,6 +142,7 @@ function Interventions() {
         >
           Nouvelle intervention
         </Link>
+          )}
       </div>
 
       {/* Filters */}

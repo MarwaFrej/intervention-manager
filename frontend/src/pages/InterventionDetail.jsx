@@ -20,6 +20,8 @@ import {
 import { getTechnicians } from "../services/userService";
 import { UserCheck } from "lucide-react";
 
+import { jwtDecode } from "jwt-decode";
+
 const statusLabels = {
   NEW: "Nouvelle",
   IN_PROGRESS: "En cours",
@@ -80,6 +82,7 @@ function InterventionDetail() {
   const [assigningTechnician, setAssigningTechnician] = useState(false);
   const [assignmentError, setAssignmentError] = useState("");
   const [assignmentSuccess, setAssignmentSuccess] = useState("");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -169,6 +172,14 @@ function InterventionDetail() {
     };
 
     loadTechnicians();
+  }, []);
+
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setRole(decodedToken.role ?? role.length > 0 ? role[0] : "");
+    }
   }, []);
 
   const handleAssignTechnician = async () => {
@@ -265,12 +276,14 @@ function InterventionDetail() {
             </p>
           </div>
 
+          {role === "ROLE_ADMIN" && (
           <Link
             to={`/interventions/${id}/edit`}
             className="inline-flex w-fit items-center rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
           >
             Modifier
           </Link>
+          )}
         </div>
       </div>
 
@@ -476,7 +489,10 @@ function InterventionDetail() {
               </span>
             </p>
 
-          {loadingTechnicians ? ( <p className="text-sm text-slate-500">
+          {
+            role === "ROLE_ADMIN" && (
+          
+          loadingTechnicians ? ( <p className="text-sm text-slate-500">
           Chargement des techniciens... </p>
           ) : (
           <>
@@ -494,7 +510,7 @@ function InterventionDetail() {
                   {technician.firstName} {technician.lastName}
                 </option>
               ))}
-            </select>
+          </select>
 
             <button
               type="button"
@@ -507,13 +523,13 @@ function InterventionDetail() {
           </>
 
 
-          )}
+          ))}
 
-          {assignmentError && ( <p className="mt-3 text-sm text-red-600">
+          {role === "ROLE_ADMIN" && assignmentError && ( <p className="mt-3 text-sm text-red-600">
           {assignmentError} </p>
           )}
 
-          {assignmentSuccess && ( <p className="mt-3 text-sm text-emerald-700">
+          {role === "ROLE_ADMIN" && assignmentSuccess && ( <p className="mt-3 text-sm text-emerald-700">
           {assignmentSuccess} </p>
           )}
 
