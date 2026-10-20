@@ -257,6 +257,7 @@ public class InterventionService {
         );
     }
 
+		@Transactional
     public InterventionResponse updateStatus(
 			Long interventionId,
 			UpdateInterventionStatusRequest request

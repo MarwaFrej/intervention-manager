@@ -86,7 +86,7 @@ public class InterventionController {
 
     @Operation(summary = "Obtenir une intervention par son ID")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER', 'TECHNICIAN')")
     public ResponseEntity<InterventionResponse> getInterventionById(
             @PathVariable Long id
     ) {
