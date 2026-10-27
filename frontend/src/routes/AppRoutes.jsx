@@ -21,6 +21,7 @@ import ClientDetail from "../pages/ClientDetail";
 import UserCreate from "../pages/UserCreate";
 import UserEdit from "../pages/UserEdit";
 import UserDetail from "../pages/UserDetail";
+import Planning from "../pages/Planning";
 
 function AppRoutes() {
   return (
@@ -33,6 +34,7 @@ function AppRoutes() {
           <Route path="/interventions" element={<Interventions />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/planning" element={<Planning />} />
         </Route>
       </Route>
       <Route path="/interventions/:id" element={<InterventionDetail />}/>
@@ -48,6 +50,8 @@ function AppRoutes() {
       <Route path="/users/new" element={<UserCreate />} />
       <Route path="/users/:id/edit" element={<UserEdit />} />
       <Route path="/users/:id" element={<UserDetail />} /> 
+
+     
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 

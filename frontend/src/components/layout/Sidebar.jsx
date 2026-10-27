@@ -4,6 +4,7 @@ import {
   Settings,
   UserCog,
   Users,
+  Calendar,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -14,6 +15,11 @@ const navigation = [
     label: "Dashboard",
     path: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    label: "Planning",
+    path: "/planning",
+    icon: Calendar,
   },
   {
     label: "Interventions",

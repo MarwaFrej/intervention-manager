@@ -35,6 +35,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
 
 @Service
 public class InterventionService {
@@ -322,5 +324,41 @@ public class InterventionService {
 				.map(interventionMapper::toHistoryResponse)
 				.toList();
 		}
+
+		@Transactional(readOnly = true)
+		public List<InterventionResponse> getPlanning(
+						LocalDateTime start,
+						LocalDateTime end
+		) {
+    if (start == null || end == null || !start.isBefore(end)) {
+        throw new IllegalArgumentException(
+                "La période du planning est invalide."
+        );
+    }
+
+    User user = getCurrentUser();
+
+    List<Intervention> interventions = switch (user.getRole()) {
+        case TECHNICIAN ->
+                interventionRepository
+                        .findByTechnician_IdAndScheduledAtGreaterThanEqualAndScheduledAtLessThan(
+                                user.getId(), start, end
+                        );
+
+        case ADMIN, MANAGER ->
+                interventionRepository
+                        .findByScheduledAtGreaterThanEqualAndScheduledAtLessThan(
+                                start, end
+                        );
+
+        default -> throw new IllegalStateException(
+                "Le rôle de l'utilisateur n'est pas pris en charge"
+        );
+    };
+
+    return interventions.stream()
+            .map(interventionMapper::toResponse)
+            .toList();
+}
 
 }

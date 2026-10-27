@@ -8,7 +8,7 @@ const statusLabels = {
   NEW: "Nouvelle",
   IN_PROGRESS: "En cours",
   COMPLETED: "Terminée",
-  CANCELLED: "Annulée",
+  CANCELED: "Annulée",
 };
 
 const priorityLabels = {
@@ -22,7 +22,7 @@ const statusStyles = {
   NEW: "bg-blue-50 text-blue-700",
   IN_PROGRESS: "bg-amber-50 text-amber-700",
   COMPLETED: "bg-emerald-50 text-emerald-700",
-  CANCELLED: "bg-red-50 text-red-700",
+  CANCELED: "bg-red-50 text-red-700",
 };
 
 const priorityStyles = {
@@ -174,7 +174,7 @@ function Interventions() {
             <option value="NEW">Nouvelle</option>
             <option value="IN_PROGRESS">En cours</option>
             <option value="COMPLETED">Terminée</option>
-            <option value="CANCELLED">Annulée</option>
+            <option value="CANCELED">Annulée</option>
           </select>
         </div>
       </div>

@@ -64,3 +64,11 @@ export const getInterventionHistory = async (id) => {
   return response.data;
 };
 
+export const getPlanningInterventions = async (start, end) => {
+  const response = await api.get("/interventions/planning", {
+    params: { start, end },
+  });
+
+  return response.data;
+};
+

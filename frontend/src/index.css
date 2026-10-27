@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+.fc .fc-timegrid-event,
+.fc .fc-daygrid-event {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
+.fc .fc-event-main {
+  background-color: transparent !important;
+}

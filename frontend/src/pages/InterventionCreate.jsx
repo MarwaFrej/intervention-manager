@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Save } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { createIntervention } from "../services/interventionService";
+import { createIntervention, assignTechnician } from "../services/interventionService";
 import { getClients } from "../services/clientService";
+import { getUsers } from "../services/userService";
 
 const priorities = [
   { value: "LOW", label: "Faible" },
@@ -12,21 +13,29 @@ const priorities = [
   { value: "URGENT", label: "Urgente" },
 ];
 
-function InterventionCreate() {
+function InterventionCreate({
+  isModal = false,
+  initialScheduledAt = "",
+  onCreated,
+  onCancel,
+}) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     title: "",
     description: "",
     priority: "MEDIUM",
-    scheduledAt: "",
+    scheduledAt: initialScheduledAt,
     clientId: "",
+    technicianId: "",
   });
 
   const [clients, setClients] = useState([]);
   const [loadingClients, setLoadingClients] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [technicians, setTechnicians] = useState([]);
+  const [loadingTechnicians, setLoadingTechnicians] = useState(true);
 
   useEffect(() => {
     const loadClients = async () => {
@@ -49,6 +58,22 @@ function InterventionCreate() {
     };
 
     loadClients();
+
+    const loadTechnicians = async () => {
+    try {
+      const users = await getUsers();
+
+      setTechnicians(
+        users.filter((user) => user.role === "TECHNICIAN")
+        );
+      } catch (err) {
+        console.error("Erreur chargement techniciens :", err);
+      } finally {
+        setLoadingTechnicians(false);
+      }
+    };
+
+    loadTechnicians();
   }, []);
 
   const handleChange = (event) => {
@@ -72,14 +97,28 @@ function InterventionCreate() {
         description: form.description.trim(),
         priority: form.priority,
         clientId: Number(form.clientId),
+        technicianId: form.technicianId
+          ? Number(form.technicianId)
+          : null,
         scheduledAt: form.scheduledAt
           ? `${form.scheduledAt}:00`
           : null,
       };
 
-      await createIntervention(payload);
+     const createdIntervention = await createIntervention(payload);
 
-      navigate("/interventions");
+    if (form.technicianId) {
+      await assignTechnician(
+        createdIntervention.id,
+        Number(form.technicianId)
+      );
+    }
+
+     if (onCreated) {
+        onCreated();
+      } else {
+        navigate("/interventions");
+      }
     } catch (err) {
       console.error(err);
 
@@ -93,16 +132,18 @@ function InterventionCreate() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-8">
+    <div className={isModal ? "space-y-6" : "mx-auto max-w-4xl space-y-6 p-8"}>
       {/* Header */}
       <div>
+        {!isModal && (
         <Link
           to="/interventions"
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500"
         >
           <ArrowLeft size={18} />
           Retour aux interventions
         </Link>
+      )}
 
         <div className="mt-4">
           <h1 className="text-2xl font-semibold text-slate-900">
@@ -209,6 +250,33 @@ function InterventionCreate() {
               placeholder="Décrivez le problème ou l'intervention à réaliser..."
               className="w-full resize-y rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             />
+          </div>
+
+          {/* Technician */}
+          <div>
+            <label
+              htmlFor="technicianId"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Technicien responsable
+            </label>
+
+            <select
+              id="technicianId"
+              name="technicianId"
+              value={form.technicianId || ""}
+              onChange={handleChange}
+              disabled={loadingTechnicians}
+              className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm"
+            >
+              <option value="">Non assignée</option>
+
+              {technicians.map((technician) => (
+                <option key={technician.id} value={technician.id}>
+                  {technician.firstName} {technician.lastName}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Priority + date */}

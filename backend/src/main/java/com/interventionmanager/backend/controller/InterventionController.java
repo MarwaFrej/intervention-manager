@@ -21,6 +21,9 @@ import com.interventionmanager.backend.dto.response.PageResponse;
 import com.interventionmanager.backend.dto.request.InterventionSearchRequest;
 import com.interventionmanager.backend.dto.request.UpdateInterventionStatusRequest;
 import com.interventionmanager.backend.dto.response.InterventionHistoryResponse;
+import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -178,5 +181,22 @@ public class InterventionController {
 				return ResponseEntity.ok(
 						interventionService.getHistory(id)
 				);
+		}
+
+		@Operation(summary = "Obtenir les interventions du planning")
+		@GetMapping("/planning")
+		@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TECHNICIAN')")
+		public ResponseEntity<List<InterventionResponse>> getPlanning(
+				@RequestParam
+				@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+				LocalDateTime start,
+
+				@RequestParam
+				@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+				LocalDateTime end
+		) {
+			return ResponseEntity.ok(
+					interventionService.getPlanning(start, end)
+			);
 		}
 }
