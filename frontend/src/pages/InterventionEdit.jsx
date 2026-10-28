@@ -53,7 +53,7 @@ function InterventionEdit() {
 		street: "",
 		city: "",
 		postalCode: "",
-		country: "",
+		country: "France",
 	});
 
   useEffect(() => {
@@ -63,6 +63,7 @@ function InterventionEdit() {
         setError("");
 
         const data = await getIntervention(id);
+        console.log(data)
 
        setForm({
 					title: data.title ?? "",
@@ -73,10 +74,12 @@ function InterventionEdit() {
 					technicianId: data.technicianId ?? null,
 					technicianName: data.technicianName ?? null,
           address: data.address ?? "",
+          street: data.street ?? "",
+          city: data.city ?? "", 
+          country: data.country ?? ""
 				});
       } catch (err) {
         console.error(err);
-
         setError(
           "Impossible de charger les informations de l'intervention.",
         );
@@ -344,7 +347,7 @@ function InterventionEdit() {
               htmlFor="address"
               className="mb-2 block text-sm font-semibold text-slate-700"
             >
-              Adresse
+              Complément d'adresse
             </label>
 
             <input
@@ -353,7 +356,6 @@ function InterventionEdit() {
               type="text"
               value={form.address}
               onChange={handleChange}
-              required
               maxLength={255}
               placeholder="Ex. 123 Rue de la Paix, 75000 Paris"
               className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"

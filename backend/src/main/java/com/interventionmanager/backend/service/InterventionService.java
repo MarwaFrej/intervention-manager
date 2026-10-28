@@ -37,6 +37,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Predicate;
+import java.util.ArrayList;
 
 @Service
 public class InterventionService {
@@ -144,7 +147,7 @@ public class InterventionService {
         interventionRepository.delete(intervention);
     }
 
-
+    @Transactional
     public InterventionResponse updateIntervention(
             Long id,
             UpdateInterventionRequest request
@@ -163,6 +166,21 @@ public class InterventionService {
             intervention.setDescription(request.description());
         }
 
+        if (request.street() != null){
+            intervention.setStreet(request.street());
+        }
+
+        if (request.city() != null){
+            intervention.setCity(request.city());
+        }
+
+        if (request.postalCode() != null){
+            intervention.setPostalCode(request.postalCode());
+        }
+
+        if (request.country() != null){
+            intervention.setCountry(request.country());
+        }
 
         if (request.priority() != null) {
             intervention.setPriority(request.priority());
@@ -360,5 +378,84 @@ public class InterventionService {
             .map(interventionMapper::toResponse)
             .toList();
 }
+
+
+@Transactional(readOnly = true)
+public List<InterventionResponse> getMapInterventions(
+        String status,
+        Long technicianId,
+        LocalDateTime start,
+        LocalDateTime end
+) {
+    User user = getCurrentUser();
+
+    if (start != null && end != null && !start.isBefore(end)) {
+        throw new IllegalArgumentException(
+                "La date de début doit être antérieure à la date de fin."
+        );
+    }
+
+    InterventionStatus selectedStatus = null;
+
+    if (status != null && !status.isBlank()) {
+        try {
+            selectedStatus = InterventionStatus.valueOf(
+                    status.trim().toUpperCase()
+            );
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    "Le statut demandé est invalide."
+            );
+        }
+    }
+
+    final InterventionStatus finalStatus = selectedStatus;
+
+    Specification<Intervention> specification = (root, query, cb) -> {
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Restriction par rôle : le technicien ne voit que ses interventions.
+        if (user.getRole() == Role.TECHNICIAN) {
+            predicates.add(
+                    cb.equal(root.get("technician").get("id"), user.getId())
+            );
+        } else if (technicianId != null) {
+            // Le filtre technicien est applicable aux managers et admins.
+            predicates.add(
+                    cb.equal(root.get("technician").get("id"), technicianId)
+            );
+        }
+
+        if (finalStatus != null) {
+            predicates.add(
+                    cb.equal(root.get("status"), finalStatus)
+            );
+        }
+
+        if (start != null) {
+            predicates.add(
+                    cb.greaterThanOrEqualTo(
+                            root.get("scheduledAt"), start
+                    )
+            );
+        }
+
+        if (end != null) {
+            predicates.add(
+                    cb.lessThan(
+                            root.get("scheduledAt"), end
+                    )
+            );
+        }
+
+        return cb.and(predicates.toArray(new Predicate[0]));
+    };
+
+    return interventionRepository.findAll(specification)
+            .stream()
+            .map(interventionMapper::toResponse)
+            .toList();
+}
+
 
 }

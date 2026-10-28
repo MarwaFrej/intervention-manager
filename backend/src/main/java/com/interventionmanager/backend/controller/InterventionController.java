@@ -24,6 +24,7 @@ import com.interventionmanager.backend.dto.response.InterventionHistoryResponse;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -199,4 +200,25 @@ public class InterventionController {
 					interventionService.getPlanning(start, end)
 			);
 		}
+
+
+	@Operation(summary = "Obtenir les interventions pour la carte")
+	@GetMapping("/map")
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'TECHNICIAN')")
+	public ResponseEntity<List<InterventionResponse>> getMapInterventions(
+					@RequestParam(required = false) String status,
+					@RequestParam(required = false) Long technicianId,
+					@RequestParam(required = false)
+					@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+					LocalDateTime start,
+					@RequestParam(required = false)
+					@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+					LocalDateTime end
+	) {
+			return ResponseEntity.ok(
+							interventionService.getMapInterventions(
+											status, technicianId, start, end
+							)
+			);
+	}
 }

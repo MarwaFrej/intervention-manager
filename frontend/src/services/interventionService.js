@@ -72,3 +72,18 @@ export const getPlanningInterventions = async (start, end) => {
   return response.data;
 };
 
+export const getMapInterventions = async (filters = {}) => {
+  const params = {};
+
+  if (filters.status) params.status = filters.status;
+  if (filters.technicianId) {
+    params.technicianId = filters.technicianId;
+  }
+  if (filters.start) params.start = filters.start;
+  if (filters.end) params.end = filters.end;
+
+  const response = await api.get("/interventions/map", { params });
+  return response.data;
+};
+
+

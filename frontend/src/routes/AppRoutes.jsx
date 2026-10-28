@@ -22,6 +22,7 @@ import UserCreate from "../pages/UserCreate";
 import UserEdit from "../pages/UserEdit";
 import UserDetail from "../pages/UserDetail";
 import Planning from "../pages/Planning";
+import InterventionMap from "../pages/InterventionMap";
 
 function AppRoutes() {
   return (
@@ -35,6 +36,7 @@ function AppRoutes() {
           <Route path="/clients" element={<Clients />} />
           <Route path="/users" element={<Users />} />
           <Route path="/planning" element={<Planning />} />
+          <Route path="/map" element={<InterventionMap />} />
         </Route>
       </Route>
       <Route path="/interventions/:id" element={<InterventionDetail />}/>

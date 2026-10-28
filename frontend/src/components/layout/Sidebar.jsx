@@ -5,6 +5,7 @@ import {
   UserCog,
   Users,
   Calendar,
+  MapPin,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -25,6 +26,11 @@ const navigation = [
     label: "Interventions",
     path: "/interventions",
     icon: ClipboardList,
+  },
+  {
+    label: "Cartes des interventions",
+    path: "/map",
+    icon: MapPin,
   },
   {
     label: "Clients",
