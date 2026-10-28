@@ -28,6 +28,21 @@ public class Intervention {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = true)
+    private String address;
+
+    @Column(nullable = false)
+    private String street;
+
+    @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false)
+    private String postalCode;
+
+    @Column(nullable = false)
+    private String country;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InterventionStatus status;

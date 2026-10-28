@@ -17,6 +17,11 @@ public class InterventionMapper {
                 .title(request.title())
                 .description(request.description())
                 .priority(request.priority())
+                .address(request.address())
+                .street(request.street())
+                .city(request.city())
+                .postalCode(request.postalCode())
+                .country(request.country())
                 .scheduledAt(request.scheduledAt())
                 .build();
     }
@@ -30,6 +35,11 @@ public class InterventionMapper {
                 .description(intervention.getDescription())
                 .status(intervention.getStatus())
                 .priority(intervention.getPriority())
+                .address(intervention.getAddress())
+                .street(intervention.getStreet())
+                .city(intervention.getCity())
+                .postalCode(intervention.getPostalCode())
+                .country(intervention.getCountry())
                 .clientId(intervention.getClient().getId())
                 .scheduledAt(intervention.getScheduledAt())
                 .createdAt(intervention.getCreatedAt())

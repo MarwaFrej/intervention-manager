@@ -22,6 +22,20 @@ public record CreateInterventionRequest(
     LocalDateTime scheduledAt,
 
     @NotNull(message = "Le client est obligatoire")
-    Long clientId
+    Long clientId,
 
+    String address,
+
+    @NotBlank(message = "LE rue est obligatoire")
+    String street,
+
+    @NotBlank(message = "La ville est obligatoire")
+    String city,
+
+    @NotBlank(message = "Le code postal est obligatoire")
+    @Size(min = 5, max = 5, message = "Le code postal doit contenir exactement 5 caractères")
+    String postalCode,
+
+    @NotBlank(message = "Le pays est obligatoire")
+    String country
 ) {}

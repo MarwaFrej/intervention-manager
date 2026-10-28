@@ -28,6 +28,11 @@ function InterventionCreate({
     scheduledAt: initialScheduledAt,
     clientId: "",
     technicianId: "",
+    address: "",
+    street: "",
+    city: "",
+    postalCode: "",
+    country: "France",
   });
 
   const [clients, setClients] = useState([]);
@@ -97,6 +102,11 @@ function InterventionCreate({
         description: form.description.trim(),
         priority: form.priority,
         clientId: Number(form.clientId),
+        address: form.address.trim(),
+        street: form.street.trim(),
+        city: form.city.trim(),
+        postalCode: form.postalCode.trim(),
+        country: form.country.trim(),
         technicianId: form.technicianId
           ? Number(form.technicianId)
           : null,
@@ -249,6 +259,115 @@ function InterventionCreate({
               rows={6}
               placeholder="Décrivez le problème ou l'intervention à réaliser..."
               className="w-full resize-y rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Street */}
+          <div>
+            <label
+              htmlFor="street"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Rue
+            </label>
+
+            <input
+              id="street"
+              name="street"
+              type="text"
+              value={form.street}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. 123 Rue de la Paix"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* City */}
+          <div>
+            <label
+              htmlFor="city"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Ville
+            </label>
+
+            <input
+              id="city"
+              name="city"
+              type="text"
+              value={form.city}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. Paris"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Postal Code */}
+          <div>
+            <label
+              htmlFor="postalCode"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Code postal
+            </label>
+
+            <input
+              id="postalCode"
+              name="postalCode"
+              type="text"
+              value={form.postalCode}
+              onChange={handleChange}
+              required
+              maxLength={5}
+              placeholder="Ex. 75000"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>  
+
+          {/* Country */}
+          <div>
+            <label
+              htmlFor="country"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Pays
+            </label>
+
+            <input
+              id="country"
+              name="country"
+              type="text"
+              value={form.country}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. France"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Address complement */}
+          <div>
+            <label
+              htmlFor="address"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Complément d'adresse
+            </label>
+
+            <input
+              id="address"
+              name="address"
+              type="text"
+              value={form.address}
+              onChange={handleChange}
+              maxLength={255}
+              placeholder="Bâtiment, étage, porte, code d’accès…"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             />
           </div>
 

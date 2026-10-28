@@ -21,6 +21,7 @@ import { getTechnicians } from "../services/userService";
 import { UserCheck } from "lucide-react";
 
 import { jwtDecode } from "jwt-decode";
+import InterventionMap from "../components/InterventionMap";
 
 const statusLabels = {
   NEW: "Nouvelle",
@@ -318,6 +319,8 @@ function InterventionDetail() {
                     "Aucune description disponible."}
                 </p>
               </div>
+
+              <InterventionMap intervention={intervention} />
 
               <div className="grid gap-6 sm:grid-cols-2">
                 <div>

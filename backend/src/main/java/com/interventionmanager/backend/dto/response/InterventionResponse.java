@@ -18,6 +18,11 @@ public record InterventionResponse(
         LocalDateTime updatedAt,
         Long clientId,
         Long technicianId,
-        String technicianName
+        String technicianName,
+        String address,
+        String street,
+        String city,
+        String postalCode,
+        String country
 ) {
 }

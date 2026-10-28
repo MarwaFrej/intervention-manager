@@ -12,6 +12,12 @@ public record UpdateInterventionRequest(
         InterventionStatus status,
         InterventionPriority priority,
         LocalDateTime scheduledAt,
-        Long clientId
+        Long clientId,
+        String address,
+        String street,
+        String city,
+        @Size(min = 5, max = 5, message = "Le code postal doit contenir exactement 5 caractères")
+        String postalCode,
+        String country
 ) {
 }

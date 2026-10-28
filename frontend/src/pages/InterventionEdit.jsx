@@ -49,6 +49,11 @@ function InterventionEdit() {
 		clientId: null,
 		technicianId: null,
 		technicianName: null,
+		address: "",
+		street: "",
+		city: "",
+		postalCode: "",
+		country: "",
 	});
 
   useEffect(() => {
@@ -67,6 +72,7 @@ function InterventionEdit() {
 					clientId: data.clientId ?? null,
 					technicianId: data.technicianId ?? null,
 					technicianName: data.technicianName ?? null,
+          address: data.address ?? "",
 				});
       } catch (err) {
         console.error(err);
@@ -106,6 +112,11 @@ function InterventionEdit() {
         scheduledAt: form.scheduledAt
           ? `${form.scheduledAt}:00`
           : null,
+        address: form.address.trim(),
+        street: form.street.trim(),
+        city: form.city.trim(),
+        postalCode: form.postalCode.trim(),
+        country: form.country.trim(),
       };
 
       await updateIntervention(id, payload);
@@ -236,6 +247,116 @@ function InterventionEdit() {
               rows={6}
               placeholder="Décrivez le problème ou l'intervention à réaliser..."
               className="w-full resize-y rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Street */}
+          <div>
+            <label
+              htmlFor="street"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Rue
+            </label>
+
+            <input
+              id="street"
+              name="street"
+              type="text"
+              value={form.street}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. 123 Rue de la Paix"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* City */}
+          <div>
+            <label
+              htmlFor="city"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Ville
+            </label>
+
+            <input
+              id="city"
+              name="city"
+              type="text"
+              value={form.city}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. Paris"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Postal Code */}
+          <div>
+            <label
+              htmlFor="postalCode"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Code postal
+            </label>
+
+            <input
+              id="postalCode"
+              name="postalCode"
+              type="text"
+              value={form.postalCode}
+              onChange={handleChange}
+              required
+              maxLength={5}
+              placeholder="Ex. 75000"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label
+              htmlFor="country"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Pays
+            </label>
+
+            <input
+              id="country"
+              name="country"
+              type="text"
+              value={form.country}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. France"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+            />
+          </div>
+
+          {/* Address */}
+          <div>
+            <label
+              htmlFor="address"
+              className="mb-2 block text-sm font-semibold text-slate-700"
+            >
+              Adresse
+            </label>
+
+            <input
+              id="address"
+              name="address"
+              type="text"
+              value={form.address}
+              onChange={handleChange}
+              required
+              maxLength={255}
+              placeholder="Ex. 123 Rue de la Paix, 75000 Paris"
+              className="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
             />
           </div>
 

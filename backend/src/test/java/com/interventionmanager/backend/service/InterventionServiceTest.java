@@ -76,7 +76,12 @@ class InterventionServiceTest {
                     "Ne fonctionne plus",
                     InterventionPriority.HIGH,
                     LocalDateTime.now().plusDays(1),
-                    1L
+                    1L,
+					"123 Rue de la Paix",
+					"Rue de la Paix",
+					"Paris",
+					"75000",
+					"France"
             );
 
         Client client = Client.builder()
@@ -109,6 +114,7 @@ class InterventionServiceTest {
                         .title(request.title())
                         .description(request.description())
                         .priority(request.priority())
+                        .address(request.address())
                         .status(InterventionStatus.NEW)
                         .clientId(1L)
                         .scheduledAt(request.scheduledAt())
@@ -150,7 +156,12 @@ class InterventionServiceTest {
 										"Ne fonctionne plus",
 										InterventionPriority.HIGH,
 										LocalDateTime.now().plusDays(1),
-										1L
+										1L,
+										"123 Rue de la Paix",
+										"Rue de la Paix",
+										"Paris",
+										"75000",
+										"France"
 						);
 
 		when(clientRepository.findById(1L))
@@ -183,6 +194,11 @@ class InterventionServiceTest {
 								.title("Panne imprimante")
 								.description("Ne fonctionne plus")
 								.status(InterventionStatus.NEW)
+								.address("123 Rue de la Paix")
+								.street("Rue de la Paix")
+								.city("Paris")
+								.postalCode("75000")
+								.country("France")
 								.priority(InterventionPriority.HIGH)
 								.scheduledAt(LocalDateTime.now().plusDays(1))
 								.client(client)
@@ -197,6 +213,11 @@ class InterventionServiceTest {
 												.priority(InterventionPriority.HIGH)
 												.scheduledAt(intervention.getScheduledAt())
 												.clientId(1L)
+												.address(intervention.getAddress())
+												.street(intervention.getStreet())
+												.city(intervention.getCity())
+												.postalCode(intervention.getPostalCode())
+												.country(intervention.getCountry())
 												.build();
 
 				when(interventionRepository.findById(1L))
@@ -300,6 +321,11 @@ class InterventionServiceTest {
 								.title("Ancien titre")
 								.description("Ancienne description")
 								.status(InterventionStatus.NEW)
+								.address("123 Rue de la Paix")
+								.street("Rue de la Paix")
+								.city("Paris")
+								.postalCode("75000")
+								.country("France")
 								.priority(InterventionPriority.LOW)
 								.scheduledAt(LocalDateTime.now().plusDays(1))
 								.client(client)
@@ -312,7 +338,12 @@ class InterventionServiceTest {
 												InterventionStatus.IN_PROGRESS,
 												InterventionPriority.HIGH,
 												LocalDateTime.now().plusDays(3),
-												1L
+												1L,
+												"456 Avenue des Champs-Élysées",
+												"Rue des Champs-Élysées",
+												"Paris",
+												"75008",
+												"France"
 								);
 
 				InterventionResponse response =
@@ -324,6 +355,11 @@ class InterventionServiceTest {
 												.priority(InterventionPriority.HIGH)
 												.scheduledAt(request.scheduledAt())
 												.clientId(1L)
+												.address(request.address())
+												.street(request.street())
+												.city(request.city())
+												.postalCode(request.postalCode())
+												.country(request.country())
 												.build();
 
 				when(interventionRepository.findById(1L))
@@ -349,6 +385,11 @@ class InterventionServiceTest {
 				assertEquals("Nouvelle description", intervention.getDescription());
 				assertEquals(InterventionStatus.IN_PROGRESS, intervention.getStatus());
 				assertEquals(InterventionPriority.HIGH, intervention.getPriority());
+				assertEquals("456 Avenue des Champs-Élysées", intervention.getAddress());
+				assertEquals("Rue des Champs-Élysées", intervention.getStreet());
+				assertEquals("Paris", intervention.getCity());
+				assertEquals("75008", intervention.getPostalCode());
+				assertEquals("France", intervention.getCountry());
 
 				verify(interventionRepository).save(intervention);
 
@@ -365,6 +406,11 @@ class InterventionServiceTest {
 					.title("Réparation chaudière")
 					.priority(InterventionPriority.HIGH)
 					.status(InterventionStatus.NEW)
+					.address("123 Rue de la Paix")
+					.street("Rue de la Paix")
+					.city("Paris")
+					.postalCode("75000")
+					.country("France")
 					.build();
 
 
