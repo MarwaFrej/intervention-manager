@@ -177,6 +177,18 @@ export default function Planning() {
 		setCreateModalOpen(true);
 	}, []);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
      <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -264,82 +276,90 @@ export default function Planning() {
         </p>
       )}
 
-      <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm md:p-5">
-        <FullCalendar
-					plugins={[
-							themePlugin,
-							dayGridPlugin,
-							timeGridPlugin,
-							interactionPlugin,
-					]}
-          initialView="timeGridWeek"
-          locale={frLocale}
-          firstDay={1}
-          height="auto"
-          headerToolbar={{
+<div className="w-full min-w-0 rounded-xl border border-gray-200 bg-white p-2 shadow-sm sm:p-3 md:p-5">
+  <FullCalendar
+    plugins={[
+      themePlugin,
+      dayGridPlugin,
+      timeGridPlugin,
+      interactionPlugin,
+    ]}
+    initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
+    locale={frLocale}
+    firstDay={1}
+    height="auto"
+    handleWindowResize={true}
+    headerToolbar={
+      isMobile
+        ? {
+            left: "prev,next",
+            center: "title",
+            right: "dayGridMonth,timeGridDay",
+          }
+        : {
             left: "prev,next today",
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
-          datesSet={handleDatesSet}
-          events={events}
-          eventClick={handleEventClick}
-          eventDisplay="block"
-          displayEventTime
-          slotMinTime="07:00:00"
-          slotMaxTime="20:00:00"
-          allDaySlot={false}
-          nowIndicator
-          noEventsContent="Aucune intervention sur cette période"
-					dateClick={handleDateClick}
+          }
+    }
+    datesSet={handleDatesSet}
+    events={events}
+    eventClick={handleEventClick}
+    eventDisplay="block"
+    displayEventTime
+    slotMinTime="07:00:00"
+    slotMaxTime="20:00:00"
+    allDaySlot={false}
+    nowIndicator
+    noEventsContent="Aucune intervention sur cette période"
+    dateClick={handleDateClick}
+    eventContent={(arg) => {
+      const color = getStatusColor(arg.event.extendedProps.status);
 
-					eventContent={(arg) => {
-						const color = getStatusColor(arg.event.extendedProps.status);
+      return {
+        html: `
+          <div style="
+            background: ${color} !important;
+            color: white;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 4px;
+            border-radius: 4px;
+            overflow: hidden;
+          ">
+            <div style="
+              font-weight: 600;
+              font-size: 12px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            ">
+              ${arg.event.title}
+            </div>
+            <div style="font-size: 11px; overflow: hidden; text-overflow: ellipsis;">
+              ${arg.event.extendedProps.technicianName || ""}
+            </div>
+          </div>
+        `,
+      };
+    }}
+    eventDidMount={(info) => {
+      const color = getStatusColor(info.event.extendedProps.status);
 
-						return {
-							html: `
-								<div style="
-									background: ${color} !important;
-									color: white;
-									width: 100%;
-									height: 100%;
-									box-sizing: border-box;
-									padding: 4px;
-									border-radius: 4px;
-									overflow: hidden;
-								">
-									<div style="font-weight: 600; font-size: 12px; overflow: hidden;">
-										${arg.event.title}
-									</div>
-									<div style="font-size: 11px;">
-										${arg.event.extendedProps.technicianName}
-									</div>
-								</div>
-							`,
-						};
-					}}
+      info.el.style.setProperty("background", color, "important");
+      info.el.style.setProperty("background-color", color, "important");
+      info.el.style.setProperty("border-color", color, "important");
 
-					eventDidMount={(info) => {
-						const color = getStatusColor(info.event.extendedProps.status);
-
-						// Colorer le conteneur principal de l'événement
-						info.el.style.setProperty("background", color, "important");
-						info.el.style.setProperty("background-color", color, "important");
-						info.el.style.setProperty("border-color", color, "important");
-
-						// Colorer également les éléments internes
-						info.el.querySelectorAll(
-							".fc-event-main, .fc-event-main-frame"
-						).forEach((element) => {
-							element.style.setProperty("background", color, "important");
-							element.style.setProperty("background-color", color, "important");
-							element.style.setProperty("color", "#FFFFFF", "important");
-						});
-					}}
-
-
-        />
-      </div>
+      info.el.querySelectorAll(
+        ".fc-event-main, .fc-event-main-frame"
+      ).forEach((element) => {
+        element.style.setProperty("background", color, "important");
+        element.style.setProperty("background-color", color, "important");
+        element.style.setProperty("color", "#FFFFFF", "important");
+      });
+    }}
+  />
+</div>
 
 {createModalOpen && (
   <div

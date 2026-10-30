@@ -140,9 +140,9 @@ function Users() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {loading ? (
-          <div className="space-y-4 p-6">
+          <div className="space-y-4 p-4 sm:p-6">
             {[1, 2, 3, 4].map((item) => (
               <div
                 key={item}
@@ -151,7 +151,7 @@ function Users() {
             ))}
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="px-6 py-12 text-center">
+          <div className="px-4 py-12 text-center sm:px-6">
             <p className="font-medium text-slate-900">
               Aucun utilisateur trouvé
             </p>
@@ -163,95 +163,177 @@ function Users() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[700px]">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Utilisateur
-                  </th>
+          <>
+            {/* Version ordinateur et tablette */}
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full min-w-[700px]">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50">
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Utilisateur
+                    </th>
 
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Email
-                  </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Email
+                    </th>
 
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Rôle
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+                    <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Rôle
+                    </th>
 
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
-                          {user.firstName?.charAt(0)}
-                          {user.lastName?.charAt(0)}
-                        </div>
-
-                        <div>
-                          <p className="font-medium text-slate-900">
-                            {user.firstName} {user.lastName}
-                          </p>
-
-                          <p className="text-xs text-slate-500">
-                            Utilisateur #{user.id}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {user.email}
-                    </td>
-
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {user.role === "ADMIN" ? "Administrateur" : "Technicien"}
-                    </td>
-
-
-                    <td className="px-6 py-4">
-                      <div className="flex justify-end gap-1">
-                        <Link
-                          to={`/users/${user.id}`}
-                          title="Voir l'utilisateur"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                        >
-                          <Eye size={18} />
-                        </Link>
-
-                        <Link
-                          to={`/users/${user.id}/edit`}
-                          title="Modifier l'utilisateur"
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-                        >
-                          <Pencil size={18} />
-                        </Link>
-
-                        <button
-                          type="button"
-                          title="Supprimer l'utilisateur"
-                          disabled={deletingId === user.id}
-                          onClick={() => handleDelete(user)}
-                          className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
+                    <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody>
+                  {filteredUsers.map((user) => (
+                    <tr
+                      key={user.id}
+                      className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+                            {user.firstName?.charAt(0)}
+                            {user.lastName?.charAt(0)}
+                          </div>
+
+                          <div className="min-w-0">
+                            <p className="font-medium text-slate-900">
+                              {user.firstName} {user.lastName}
+                            </p>
+
+                            <p className="text-xs text-slate-500">
+                              Utilisateur #{user.id}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {user.email}
+                      </td>
+
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {user.role === "ADMIN" ? "Administrateur" : "Technicien"}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end gap-1">
+                          <Link
+                            to={`/users/${user.id}`}
+                            title="Voir l'utilisateur"
+                            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                          >
+                            <Eye size={18} />
+                          </Link>
+
+                          <Link
+                            to={`/users/${user.id}/edit`}
+                            title="Modifier l'utilisateur"
+                            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                          >
+                            <Pencil size={18} />
+                          </Link>
+
+                          <button
+                            type="button"
+                            title="Supprimer l'utilisateur"
+                            disabled={deletingId === user.id}
+                            onClick={() => handleDelete(user)}
+                            className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Version mobile */}
+            <div className="divide-y divide-slate-100 md:hidden">
+              {filteredUsers.map((user) => (
+                <div key={user.id} className="space-y-4 p-4">
+                  {/* Informations utilisateur */}
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+                      {user.firstName?.charAt(0)}
+                      {user.lastName?.charAt(0)}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold text-slate-900">
+                        {user.firstName} {user.lastName}
+                      </p>
+
+                      <p className="text-xs text-slate-500">
+                        Utilisateur #{user.id}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Email
+                    </p>
+
+                    <p className="mt-1 break-all text-sm text-slate-600">
+                      {user.email}
+                    </p>
+                  </div>
+
+                  {/* Rôle */}
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      Rôle
+                    </p>
+
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {user.role === "ADMIN" ? "Administrateur" : "Technicien"}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
+                    <Link
+                      to={`/users/${user.id}`}
+                      title="Voir l'utilisateur"
+                      aria-label="Voir l'utilisateur"
+                      className="rounded-lg p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                    >
+                      <Eye size={18} />
+                    </Link>
+
+                    <Link
+                      to={`/users/${user.id}/edit`}
+                      title="Modifier l'utilisateur"
+                      aria-label="Modifier l'utilisateur"
+                      className="rounded-lg p-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                    >
+                      <Pencil size={18} />
+                    </Link>
+
+                    <button
+                      type="button"
+                      title="Supprimer l'utilisateur"
+                      aria-label="Supprimer l'utilisateur"
+                      disabled={deletingId === user.id}
+                      onClick={() => handleDelete(user)}
+                      className="rounded-lg p-2.5 text-slate-500 transition hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

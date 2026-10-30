@@ -188,37 +188,28 @@ function Interventions() {
 
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+
+        {/* Version PC et tablette */}
+        <div className="hidden overflow-x-auto md:block">
+          <table className="w-full min-w-[850px]">
             <thead className="border-b border-slate-200 bg-slate-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Intervention
-                </th>
-
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Client
-                </th>
-
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Priorité
-                </th>
-
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Statut
-                </th>
-
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Technicien
-                </th>
-
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Prévue le
-                </th>
-
-                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Action
-                </th>
+                {[
+                  "Intervention",
+                  "Client",
+                  "Priorité",
+                  "Statut",
+                  "Technicien",
+                  "Prévue le",
+                  "Action",
+                ].map((label) => (
+                  <th
+                    key={label}
+                    className="whitespace-nowrap px-4 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 lg:px-6"
+                  >
+                    {label}
+                  </th>
+                ))}
               </tr>
             </thead>
 
@@ -234,10 +225,7 @@ function Interventions() {
 
               {!loading && interventions.length === 0 && (
                 <tr>
-                  <td
-                    colSpan="7"
-                    className="px-6 py-12 text-center text-sm text-slate-500"
-                  >
+                  <td colSpan="7" className="px-6 py-12 text-center text-sm text-slate-500">
                     Aucune intervention trouvée.
                   </td>
                 </tr>
@@ -245,66 +233,45 @@ function Interventions() {
 
               {!loading &&
                 interventions.map((intervention) => (
-                  <tr
-                    key={intervention.id}
-                    className="transition hover:bg-slate-50"
-                  >
-                    {/* Intervention */}
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-semibold text-slate-900">
-                          {intervention.title}
-                        </p>
-
-                        <p className="mt-1 max-w-xs truncate text-sm text-slate-500">
-                          {intervention.description || "Aucune description"}
-                        </p>
-                      </div>
+                  <tr key={intervention.id} className="transition hover:bg-slate-50">
+                    <td className="max-w-xs px-4 py-4 lg:px-6">
+                      <p className="truncate font-semibold text-slate-900">
+                        {intervention.title}
+                      </p>
+                      <p className="mt-1 truncate text-sm text-slate-500">
+                        {intervention.description || "Aucune description"}
+                      </p>
                     </td>
 
-                    {/* Client */}
-                    <td className="px-6 py-4 text-sm text-slate-700">
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-700 lg:px-6">
                       Client #{intervention.clientId}
                     </td>
 
-                    {/* Priority */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          priorityStyles[intervention.priority] ??
-                          "bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        {priorityLabels[intervention.priority] ??
-                          intervention.priority}
+                    <td className="whitespace-nowrap px-4 py-4 lg:px-6">
+                      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        priorityStyles[intervention.priority] ?? "bg-slate-100 text-slate-700"
+                      }`}>
+                        {priorityLabels[intervention.priority] ?? intervention.priority}
                       </span>
                     </td>
 
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          statusStyles[intervention.status] ??
-                          "bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        {statusLabels[intervention.status] ??
-                          intervention.status}
+                    <td className="whitespace-nowrap px-4 py-4 lg:px-6">
+                      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        statusStyles[intervention.status] ?? "bg-slate-100 text-slate-700"
+                      }`}>
+                        {statusLabels[intervention.status] ?? intervention.status}
                       </span>
                     </td>
 
-                    {/* Technician */}
-                    <td className="px-6 py-4 text-sm text-slate-700">
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-700 lg:px-6">
                       {intervention.technicianName ?? "Non assigné"}
                     </td>
 
-                    {/* Scheduled date */}
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-600 lg:px-6">
                       {formatDate(intervention.scheduledAt)}
                     </td>
 
-                    {/* Action */}
-                    <td className="px-6 py-4 text-right">
+                    <td className="whitespace-nowrap px-4 py-4 text-right lg:px-6">
                       <Link
                         to={`/interventions/${intervention.id}`}
                         title="Voir le détail"
@@ -319,15 +286,100 @@ function Interventions() {
           </table>
         </div>
 
-        {/* Pagination */}
+        {/* Version mobile : cartes */}
+        <div className="divide-y divide-slate-100 md:hidden">
+          {loading &&
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="space-y-3 p-4">
+                <div className="h-5 w-2/3 animate-pulse rounded bg-slate-100" />
+                <div className="h-4 w-1/2 animate-pulse rounded bg-slate-100" />
+                <div className="h-4 w-full animate-pulse rounded bg-slate-100" />
+              </div>
+            ))}
+
+          {!loading && interventions.length === 0 && (
+            <p className="px-4 py-10 text-center text-sm text-slate-500">
+              Aucune intervention trouvée.
+            </p>
+          )}
+
+          {!loading &&
+            interventions.map((intervention) => (
+              <article key={intervention.id} className="space-y-3 p-4">
+                {/* Titre et action */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="break-words text-sm font-semibold text-slate-900">
+                      {intervention.title}
+                    </h3>
+                    <p className="mt-1 break-words text-xs text-slate-500">
+                      {intervention.description || "Aucune description"}
+                    </p>
+                  </div>
+
+                  <Link
+                    to={`/interventions/${intervention.id}`}
+                    title="Voir le détail"
+                    className="shrink-0 rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50"
+                  >
+                    <Eye size={18} />
+                  </Link>
+                </div>
+
+                {/* Informations */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="min-w-0">
+                    <p className="text-xs text-slate-500">Client</p>
+                    <p className="mt-1 font-medium text-slate-700">
+                      #{intervention.clientId}
+                    </p>
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-xs text-slate-500">Technicien</p>
+                    <p className="mt-1 break-words font-medium text-slate-700">
+                      {intervention.technicianName ?? "Non assigné"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-slate-500">Priorité</p>
+                    <span className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      priorityStyles[intervention.priority] ?? "bg-slate-100 text-slate-700"
+                    }`}>
+                      {priorityLabels[intervention.priority] ?? intervention.priority}
+                    </span>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-slate-500">Statut</p>
+                    <span className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      statusStyles[intervention.status] ?? "bg-slate-100 text-slate-700"
+                    }`}>
+                      {statusLabels[intervention.status] ?? intervention.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Date */}
+                <div className="border-t border-slate-100 pt-3">
+                  <p className="text-xs text-slate-500">Prévue le</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {formatDate(intervention.scheduledAt)}
+                  </p>
+                </div>
+              </article>
+            ))}
+        </div>
+
+        {/* Pagination commune */}
         {!loading && totalElements > 0 && (
-          <div className="flex items-center justify-between border-t border-slate-200 px-6 py-4">
-            <p className="text-sm text-slate-500">
-              {totalElements} intervention
-              {totalElements > 1 ? "s" : ""}
+          <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <p className="text-center text-sm text-slate-500 sm:text-left">
+              {totalElements} intervention{totalElements > 1 ? "s" : ""}
             </p>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={handlePreviousPage}
@@ -337,7 +389,7 @@ function Interventions() {
                 <ChevronLeft size={18} />
               </button>
 
-              <span className="px-2 text-sm font-medium text-slate-700">
+              <span className="whitespace-nowrap text-sm font-medium text-slate-700">
                 Page {page + 1} / {Math.max(totalPages, 1)}
               </span>
 

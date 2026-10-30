@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 
 function StatCard({ title, value, icon: Icon, description, color}) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="w-full min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">{title}</p>

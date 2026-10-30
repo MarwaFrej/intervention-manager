@@ -4,17 +4,19 @@ import Header from "../components/layout/Header";
 
 function DashboardLayout() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen min-w-0 md:pl-64">
       <Sidebar />
 
-      <div className="pl-64">
+      <div className="min-w-0 w-full">
+        {/* Ton header existant */}
         <Header />
 
-        <main className="p-6">
+        <main className="w-full min-w-0 p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
     </div>
+
   );
 }
 
