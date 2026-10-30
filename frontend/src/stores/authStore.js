@@ -1,7 +1,20 @@
 import { create } from "zustand";
+import { jwtDecode } from "jwt-decode";
 
 const storedToken = localStorage.getItem("token");
 const storedUser = localStorage.getItem("user");
+
+const isTokenExpired = (token) => {
+  if (!token) return true;
+
+  try {
+    const decoded = jwtDecode(token);
+
+    return !decoded.exp || decoded.exp * 1000 <= Date.now();
+  } catch {
+    return true;
+  }
+};
 
 const useAuthStore = create((set) => ({
   token: storedToken,
@@ -29,6 +42,7 @@ const useAuthStore = create((set) => ({
       user: null,
     });
   },
+  isTokenExpired: () => isTokenExpired(localStorage.getItem("token")),
 }));
 
 export default useAuthStore;
